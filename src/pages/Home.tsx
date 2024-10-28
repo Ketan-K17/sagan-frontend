@@ -11,6 +11,7 @@ import share from "../assets/share.svg";
 import review from "../assets/review.svg";
 import submit from "../assets/submit.svg";
 import history from "../assets/history.svg";
+import logo from "../assets/logo.svg";
 import { MagicCard } from "../components/ui/magic-card";
 const Home = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -111,120 +112,6 @@ const Home = () => {
       <div className="relative flex h-[calc(100vh-40px)] gap-[10px]">
         {/* Sidebar */}
 
-        {/* <div
-          className={`absolute left-0 top-0 h-full bg-white rounded-xl     z-[999] ${
-            isVisible ? (isHovered ? "w-64" : "w-0") : "w-0"
-          }`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-          }}
-        >
-          <MagicCard className="border-none  " gradientColor={"#D9D9D955"}>
-            <div className="flex items-center justify-between p-4">
-              <h1
-                className={`text-xl font-bold transition-opacity duration-300 ${
-                  isHovered ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                SAGAN
-              </h1>
-            </div>
-            <nav
-              // className="px-4"
-              className={` px-4 transition-opacity  ${
-                isHovered ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <h2 className="text-md uppercase text-gray-500 font-semibold mb-2">
-                Literature Files
-              </h2>
-              <ul>
-                {files.map((item, index) => (
-                  <button
-                    key={index}
-                    className="flex  items-center  mb-3  pl-4 "
-                  >
-                    <img src={item.icon} className="w-5, h-5" />
-                    <span className="text-xs">{item.text}</span>
-                  </button>
-                ))}
-              </ul>
-            </nav>
-            <div
-              className={`mt-8 px-4 transition-opacity  ${
-                isHovered ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <h2 className="text-md uppercase text-gray-500 font-semibold mb-2">
-                Section Outlined
-              </h2>
-              <ul>
-                {recentChats.map((chat, index) => (
-                  <li key={index} className="mb-2 pl-[20px]">
-                    - {chat}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </MagicCard>
-        </div> */}
-        {/* <div
-          className={`absolute left-0 top-0 h-full bg-white rounded-xl     z-[999] ${
-            isVisible ? (isHovered ? "w-64" : "w-0") : "w-0"
-          }`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          style={{
-            boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-          }}
-        >
-          <div className="flex items-center justify-between p-4">
-            <h1
-              className={`text-xl font-bold transition-opacity duration-300 ${
-                isHovered ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              SAGAN
-            </h1>
-          </div>
-          <nav
-            // className="px-4"
-            className={` px-4 transition-opacity  ${
-              isHovered ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <h2 className="text-md uppercase text-gray-500 font-semibold mb-2">
-              Literature Files
-            </h2>
-            <ul>
-              {files.map((item, index) => (
-                <button key={index} className="flex  items-center  mb-3  pl-4 ">
-                  <img src={item.icon} className="w-5, h-5" />
-                  <span className="text-xs">{item.text}</span>
-                </button>
-              ))}
-            </ul>
-          </nav>
-          <div
-            className={`mt-8 px-4 transition-opacity  ${
-              isHovered ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <h2 className="text-md uppercase text-gray-500 font-semibold mb-2">
-              Section Outlined
-            </h2>
-            <ul>
-              {recentChats.map((chat, index) => (
-                <li key={index} className="mb-2 pl-[20px]">
-                  - {chat}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div> */}
-
         <div
           className={`absolute left-0 top-0 h-full bg-white rounded-xl z-[999] transition-all duration-300 ease-in-out`}
           onMouseEnter={handleMouseEnter}
@@ -238,11 +125,12 @@ const Home = () => {
           <MagicCard className="border-none" gradientColor={"#D9D9D955"}>
             <div className="flex items-center justify-between p-4">
               <h1
-                className={`text-xl font-bold  ${
+                className={`text-xl flex space-x-4 items-center font-bold  ${
                   isHovered ? "opacity-100" : "opacity-0"
                 }`}
               >
-                SAGAN
+                <img src={logo} alt="logo" className="w-8 h-8" />{" "}
+                <span>SAGAN</span>
               </h1>
             </div>
             <nav className={`px-4  ${isHovered ? "opacity-100" : "opacity-0"}`}>
