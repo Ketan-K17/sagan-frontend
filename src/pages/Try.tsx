@@ -110,6 +110,7 @@ export default function Home() {
       className="container mx-auto py-[20px] "
       //  className="container mx-auto px-[20px] mt-[20px]  "
     >
+      <h1 className="text-white">this is demo</h1>
       <div
         className="relative flex h-screen  gap-[10px]"
         // className="relative flex h-[calc(100vh-40px)] gap-[10px]"
