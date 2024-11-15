@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import {
   ChevronUp,
+  Send,
   Clipboard,
   RefreshCcw,
   ClipboardCopy,
@@ -13,15 +14,6 @@ import {
   MessageSquare, // For Prompt
   BookOpen, // For Library
   Building, // For Company Info
-  Search,
-  Star,
-  Share2,
-  X,
-  Copy,
-  MessageCircle,
-  Image,
-  Send,
-  RefreshCw,
 } from "lucide-react";
 
 // import author from "../assets/authorinfo.svg";
@@ -236,13 +228,6 @@ const Home = () => {
     },
   ];
   const [activeModal, setActiveModal] = useState<string | null>(null); // State to handle active modal
-
-  const [isDocumentOpen, setIsDocumentOpen] = useState(false);
-  const [activeFormat, setActiveFormat] = useState("markdown");
-
-  const toggleDocument = () => {
-    setIsDocumentOpen(!isDocumentOpen);
-  };
   const files = [
     { text: "documentOne.txt" },
     { text: "documentTwo.txt" },
@@ -320,112 +305,6 @@ const Home = () => {
     return () => window.removeEventListener("resize", handleScroll);
   }, []);
 
-  const DocumentPreview = () => (
-    <div
-      className="bg-gray-800 rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
-      onClick={toggleDocument}
-    >
-      <div className="text-gray-400">
-        <MessageCircle size={20} />
-      </div>
-      <div>
-        <div className="font-medium">
-          Understanding Agents: From Concept to Applications
-        </div>
-        <div className="text-sm text-gray-400">Click to open document</div>
-      </div>
-    </div>
-  );
-
-  const FormatToggle = () => (
-    <div className="flex items-center bg-gray-800 rounded-lg p-1 mr-4">
-      <button
-        className={`px-4 py-1 rounded-md transition-colors ${
-          activeFormat === "markdown"
-            ? "bg-gray-700 text-white"
-            : "text-gray-400 hover:text-white"
-        }`}
-        onClick={() => setActiveFormat("markdown")}
-      >
-        Markdown
-      </button>
-      <button
-        className={`px-4 py-1 rounded-md transition-colors ${
-          activeFormat === "latex"
-            ? "bg-gray-700 text-white"
-            : "text-gray-400 hover:text-white"
-        }`}
-        onClick={() => setActiveFormat("latex")}
-      >
-        LaTeX
-      </button>
-    </div>
-  );
-
-  const MarkdownContent = () => (
-    <div className="flex-1 overflow-auto p-8">
-      <h1 className="text-3xl font-medium mb-6">
-        Understanding Agents: From Concept to Applications
-      </h1>
-
-      <p className="mb-6">
-        In the rapidly evolving landscape of technology and artificial
-        intelligence, the concept of an "agent" has become increasingly
-        significant. An agent, in its broadest sense, is an entity that can
-        perceive its environment through sensors and act upon that environment
-        through actuators to achieve specific goals. This definition encompasses
-        everything from simple software programs to sophisticated AI systems,
-        and even biological entities.
-      </p>
-
-      <h2 className="text-xl font-medium mb-4">
-        Core Characteristics of Agents
-      </h2>
-
-      <h3 className="text-lg font-medium mb-3">Autonomy</h3>
-
-      <p className="mb-6">
-        The primary characteristic that defines an agent is autonomy – the
-        ability to operate independently without direct intervention from humans
-        or other systems. An agent must be capable of making decisions based on
-        its own analysis of the situation and its programmed objectives.
-      </p>
-    </div>
-  );
-
-  const LatexContent = () => (
-    <div className="flex-1 overflow-auto p-8">
-      <pre className="font-mono text-sm whitespace-pre-wrap">
-        {`\\documentclass{article}
-
-\\title{Understanding Agents: From Concept to Applications}
-\\author{Claude}
-\\date{\\today}
-
-\\begin{document}
-
-\\maketitle
-
-\\section{Introduction}
-In the rapidly evolving landscape of technology and artificial intelligence, the concept of an
-''agent'' has become increasingly significant. An agent, in its broadest sense, is an entity that can
-perceive its environment through sensors and act upon that environment through actuators to
-achieve specific goals. This definition encompasses everything from simple software programs to
-sophisticated AI systems, and even biological entities.
-
-\\section{Core Characteristics of Agents}
-
-\\subsection{Autonomy}
-The primary characteristic that defines an agent is autonomy -- the ability to operate
-independently without direct intervention from humans or other systems. An agent must be
-capable of making decisions based on its own analysis of the situation and its programmed
-objectives.
-
-\\end{document}`}
-      </pre>
-    </div>
-  );
-
   return (
     <div
       className="bg-[#1a1a1a] w-[100vw]"
@@ -435,7 +314,7 @@ objectives.
         <div className="relative flex flex-1 gap-[10px]  overflow-hidden">
           {/* Sidebar */}
           <div
-            className={`absolute left-0 top-0 h-full bg-zinc-800 rounded-xl z-[999] transition-all duration-300 ease-in-out
+            className={`absolute left-0 top-0 h-full bg-zinc-800 rounded-xl z-[999] transition-all duration-300 ease-in-out 
               inset-0 bg-black/40 backdrop-blur-xl`}
             // className={`absolute left-0 top-0 h-full bg-zinc-800 rounded-xl z-[999] transition-all duration-300 ease-in-out backdrop-blur-sm shadow-lg shadow-black/15 bg-[rgba(228,228,228,0.12)]`}
             onMouseEnter={handleMouseEnter}
@@ -567,7 +446,7 @@ objectives.
               )}
 
               {/* Chat container */}
-              <div className="container basis-[95%] h-full mx-auto p-4 flex flex-col justify-end   ">
+              {/* <div className="container basis-[95%] h-full mx-auto p-4 flex flex-col justify-end   ">
                 <div className="relative mb-4">
                   <button
                     className="w-full p-2 text-left font-semibold flex justify-between items-center bg-[#1a1a1a] rounded-lg text-slate-300"
@@ -675,12 +554,12 @@ objectives.
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* Document viewer */}
-          <div className="w-[40%] flex flex-col gap-[5px]">
+          {/* <div className="w-[40%] flex flex-col gap-[5px]">
             <div className="basis-[5%] flex justify-between px-4  bg-[#2a2a2a]  rounded-xl">
               {sideItems.map((item, index) => (
                 <button
@@ -742,146 +621,10 @@ objectives.
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
-    // <div className="flex h-screen bg-gray-900 text-gray-100">
-    //   {/* Left Sidebar */}
-    //   <div
-    //     className={`${
-    //       isDocumentOpen ? "w-1/2" : "w-full"
-    //     } border-r border-gray-700 p-4 flex flex-col transition-all duration-300`}
-    //   >
-    //     {/* Top search bar */}
-    //     <div className="flex items-center gap-2 mb-4">
-    //       <Search className="w-5 h-5 text-gray-400" />
-    //       <div className="flex-1 bg-gray-800 rounded-lg px-4 py-2">
-    //         What is an Agent? Comprehensive Essay
-    //       </div>
-    //     </div>
-
-    //     {/* Chat messages */}
-    //     <div className="flex-1 overflow-auto">
-    //       {/* User message */}
-    //       <div className="flex gap-3 mb-6">
-    //         <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-    //           S
-    //         </div>
-    //         <div>
-    //           <div className="text-gray-300">
-    //             write an essay for what is an agent
-    //           </div>
-    //         </div>
-    //       </div>
-
-    //       {/* Assistant message */}
-    //       <div className="mb-6">
-    //         <div className="mb-4">
-    //           I'll help you write a comprehensive essay about agents.
-    //         </div>
-
-    //         <DocumentPreview />
-
-    //         <div className="text-gray-300">
-    //           I've created a comprehensive essay about agents that covers their
-    //           fundamental concepts, types, applications, and implications. The
-    //           essay is structured to provide both breadth and depth, starting
-    //           with basic definitions and moving through to complex
-    //           considerations and future directions.
-    //         </div>
-
-    //         {/* Action buttons */}
-    //         <div className="flex gap-2 mt-4">
-    //           <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-    //             <Copy size={16} />
-    //             Copy
-    //           </button>
-    //           <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-    //             <MessageCircle size={16} />
-    //             Retry
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </div>
-
-    //     {/* Input area */}
-    //     <div className="mt-4">
-    //       <div className="bg-gray-800 rounded-lg p-4">
-    //         <div className="flex items-center gap-2 mb-4">
-    //           <textarea
-    //             className="flex-1 bg-transparent resize-none outline-none"
-    //             placeholder="Reply to Claude..."
-    //             rows={1}
-    //           />
-    //         </div>
-    //         <div className="flex justify-between items-center">
-    //           <div className="flex gap-2">
-    //             <button className="text-gray-400">
-    //               <Image size={20} />
-    //             </button>
-    //           </div>
-    //           <button className="text-gray-400">
-    //             <Send size={20} />
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   </div>
-
-    //   {/* Right Document Panel */}
-    //   {isDocumentOpen && (
-    //     <div className="flex-1 flex flex-col">
-    //       {/* Document header */}
-    //       <div className="flex items-center justify-between p-4 border-b border-gray-700">
-    //         <div className="flex items-center gap-3">
-    //           <button className="text-gray-400" onClick={toggleDocument}>
-    //             <X size={20} />
-    //           </button>
-    //           <h2>Understanding Agents: From Concept to Applications</h2>
-    //         </div>
-    //         <div className="flex items-center gap-3">
-    //           <button
-    //             className="flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
-    //             onClick={() => console.log("Recompiling...")}
-    //           >
-    //             <RefreshCw size={16} />
-    //             Recompile
-    //           </button>
-    //           <button className="text-gray-400">
-    //             <Star size={20} />
-    //           </button>
-    //           <button className="text-gray-400">
-    //             <Share2 size={20} />
-    //           </button>
-    //         </div>
-    //       </div>
-
-    //       {/* Format toggle and content */}
-    //       <div className="flex-1 flex flex-col">
-    //         {/* Format toggle bar */}
-    //         <div className="flex items-center justify-between px-4 py-2 border-b border-gray-700 bg-gray-850">
-    //           <FormatToggle />
-    //         </div>
-
-    //         {/* Dynamic content based on selected format */}
-    //         {activeFormat === "markdown" ? (
-    //           <MarkdownContent />
-    //         ) : (
-    //           <LatexContent />
-    //         )}
-    //       </div>
-
-    //       {/* Document footer */}
-    //       <div className="flex items-center justify-between p-4 border-t border-gray-700">
-    //         <div className="text-sm text-gray-400">Last edited just now</div>
-    //         <button className="bg-orange-500 text-white px-4 py-2 rounded-lg">
-    //           Publish
-    //         </button>
-    //       </div>
-    //     </div>
-    //   )}
-    // </div>
   );
 };
 

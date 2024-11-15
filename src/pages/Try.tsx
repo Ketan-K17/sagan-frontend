@@ -2,32 +2,125 @@ import { useState, useRef, useEffect } from "react";
 import {
   ChevronUp,
   Send,
-  FileText,
-  History,
-  Share,
-  Upload,
-  User2,
-  X,
-  Paperclip,
-  Trash2,
-  Plus,
   Clipboard,
   RefreshCcw,
+  ClipboardCopy,
+  Download,
+  // ArrowLeft,
+  // X,
+  FileText,
+  Files, // For Project Information
+  FileInput, // For Template
+  MessageSquare, // For Prompt
+  BookOpen, // For Library
+  Building, // For Company Info
 } from "lucide-react";
 
-import author from "../assets/authorinfo.svg";
-import problem from "../assets/problem.svg";
-import agent from "../assets/agent.svg";
-import proposal from "../assets/proposal.svg";
-import pdf from "../assets/pdf.svg";
+// import author from "../assets/authorinfo.svg";
+// import problem from "../assets/problem.svg";
+// import agent from "../assets/agent.svg";
+// import proposal from "../assets/proposal.svg";
 import share from "../assets/share.svg";
 import review from "../assets/review.svg";
 import submit from "../assets/submit.svg";
 import history from "../assets/history.svg";
+import ProjectInfo from "../components/ProjectInfo";
+import TemplateForm from "../components/TemplateForm";
+import PromptForm from "../components/PromptForm";
+import LibraryForm from "../components/LibraryForm";
+import CompanyForm from "../components/CompanyForm";
 
-import RfpCard from "../components/RfpCard";
-import TempCard from "../components/TempCard";
-import Prompt from "../components/Prompt";
+// import Logo from "../assets/white_logo.svg";
+const content = {
+  title:
+    "Autonomous Navigation to Near-Earth Asteroids Using Advanced Rocket Engines",
+  sections: [
+    {
+      title: "1. Introduction",
+      content: `Near-Earth asteroids (NEAs) have garnered significant attention in the realm of space exploration due to their potential to unlock new scientific insights and resources. These celestial bodies, which orbit relatively close to Earth, present unique opportunities for exploration and utilization. The significance of NEAs lies not only in their scientific value but also in their potential as stepping stones for deeper space missions. As humanity looks beyond Earth for resources and knowledge, NEAs offer a promising frontier.
+
+The primary objective of this research project is to enhance propulsion technologies and autonomous navigation systems to facilitate missions to NEAs. By advancing these technologies, the project aims to overcome current limitations in space exploration, enabling more efficient and reliable missions. The development of advanced rocket engines and autonomous navigation systems is crucial for the success of such missions, as they ensure precise trajectory management and efficient propulsion.
+
+In the context of current space exploration challenges, this project holds immense importance. Traditional propulsion systems and navigation methods have limitations that hinder long-duration and deep-space missions. By addressing these challenges, the project not only contributes to the advancement of space technology but also opens up new possibilities for exploration and resource utilization. The integration of cutting-edge propulsion and navigation technologies is essential for the future of space exploration, making this project a pivotal step forward.`,
+    },
+    {
+      title: "2. Background and Literature Review",
+      content: `The exploration of propulsion technologies has been a cornerstone of space exploration, with various systems developed over the years. Traditional propulsion systems, such as chemical rockets, have been the workhorses of space missions. However, they come with limitations, including low efficiency and high fuel consumption, which restrict their use in long-duration missions. This project seeks to address these limitations by exploring advanced propulsion technologies that offer improved mass flow rates and efficiency.
+
+Oskar J. Haidn's contributions to advanced rocket engine design have been instrumental in pushing the boundaries of propulsion technology. His work focuses on enhancing the performance and reliability of rocket engines, making them suitable for extended missions. By building on Haidn's research, this project aims to develop propulsion systems that can support missions to NEAs, ensuring efficient and reliable travel.
+
+Autonomous navigation systems are another critical component of space missions. These systems enable spacecraft to navigate and manage their trajectories without human intervention, which is essential for missions to distant celestial bodies like NEAs. Current autonomous navigation systems have been successfully applied in various space missions, but they require further refinement to meet the demands of NEA exploration.
+
+The importance of NEA orbit determination and resource utilization cannot be overstated. Accurate orbit determination is crucial for mission planning and execution, ensuring that spacecraft can reach their targets efficiently. Additionally, NEAs are believed to contain valuable resources, such as water and metals, which could be utilized for future space missions. This project aims to refine orbit determination techniques and explore the potential for resource utilization on NEAs, contributing to the broader goals of space exploration.`,
+    },
+    {
+      title: "3.Innovative Propulsion Technologies",
+      content: `The development of advanced rocket engines is a key focus of this project, with an emphasis on improving mass flow rates and efficiency. Traditional rocket engines, while effective, have limitations that restrict their use in long-duration missions. By exploring innovative propulsion technologies, this project aims to overcome these limitations and enable more efficient and reliable space travel.
+
+One of the primary challenges in rocket design is achieving a balance between performance and reliability. Advanced rocket engines must be capable of delivering high thrust while maintaining safety and reliability over extended periods. This project addresses these challenges by integrating cutting-edge technologies and design principles, ensuring that the engines can support missions to NEAs.
+
+Liquid propulsion advancements play a crucial role in enhancing the reliability and safety of rocket engines. Liquid propellants offer several advantages, including higher efficiency and better control over thrust levels. By incorporating these advancements, the project aims to develop propulsion systems that are not only efficient but also safe and reliable for extended missions.
+
+The integration of advanced propulsion technologies is essential for the success of missions to NEAs. By improving mass flow rates and efficiency, these technologies enable spacecraft to travel longer distances with less fuel, reducing the overall cost and complexity of missions. This project represents a significant step forward in the development of propulsion systems, paving the way for future exploration of NEAs and beyond.`,
+    },
+    {
+      title: "4. Autonomous Navigation Systems",
+      content: `Autonomous navigation systems are a critical component of space missions, enabling spacecraft to navigate and manage their trajectories without human intervention. This project focuses on developing high-precision attitude control systems and state estimation algorithms to ensure accurate trajectory management in space missions.
+
+High-precision attitude control systems are essential for maintaining the correct orientation of spacecraft during missions. These systems use advanced sensors and control algorithms to adjust the spacecraft's orientation, ensuring that it remains on the correct trajectory. By developing high-precision attitude control systems, this project aims to enhance the accuracy and reliability of autonomous navigation systems.
+
+State estimation algorithms play a crucial role in autonomous navigation, providing real-time data on the spacecraft's position and velocity. These algorithms use data from onboard sensors to estimate the spacecraft's state, enabling it to make informed decisions about its trajectory. By refining state estimation algorithms, this project aims to improve the accuracy and reliability of autonomous navigation systems, ensuring that spacecraft can reach their targets efficiently.
+
+Developing autonomous navigation systems for NEAs presents unique challenges, including the need for accurate orbit determination and resource utilization. This project addresses these challenges by integrating advanced technologies and methodologies, ensuring that autonomous navigation systems can support missions to NEAs. By overcoming these challenges, the project contributes to the broader goals of space exploration, enabling more efficient and reliable missions to distant celestial bodies.
+`,
+    },
+    {
+      title: "5.Scientific Goals and Methodologies",
+      content: `The scientific goals of this project are centered around refining NEA orbit determination techniques and exploring resource utilization on NEAs. Accurate orbit determination is crucial for mission planning and execution, ensuring that spacecraft can reach their targets efficiently. This project aims to refine orbit determination techniques, improving the accuracy and reliability of mission planning.
+
+Resource utilization on NEAs is another key focus of this project. NEAs are believed to contain valuable resources, such as water and metals, which could be utilized for future space missions. By exploring the potential for resource utilization on NEAs, this project aims to contribute to the broader goals of space exploration, enabling more sustainable and cost-effective missions.
+
+Comprehensive studies on asteroid dynamics and physical characteristics are essential for understanding the potential of NEAs. These studies provide valuable insights into the composition and behavior of NEAs, informing mission planning and execution. By conducting comprehensive studies on asteroid dynamics and physical characteristics, this project aims to enhance our understanding of NEAs and their potential for exploration and utilization.
+
+The methodologies employed in achieving the scientific goals of this project are centered around advanced technologies and techniques. By integrating cutting-edge technologies and methodologies, this project aims to overcome the challenges of NEA exploration, ensuring that missions are efficient and reliable. The scientific goals and methodologies of this project represent a significant step forward in the exploration and utilization of NEAs, contributing to the broader goals of space exploration.
+`,
+    },
+    {
+      title: "6.Project Development and Timeline",
+      content: `The development of this project is structured around a comprehensive timeline, with key milestones and deliverables outlined to ensure its success. The project timeline is designed to facilitate the efficient and effective development of advanced propulsion technologies and autonomous navigation systems, ensuring that the project meets its objectives.
+
+Key milestones in the project timeline include the development and testing of advanced rocket engines, the refinement of autonomous navigation systems, and the exploration of NEA orbit determination and resource utilization. These milestones are designed to ensure that the project progresses smoothly, with each stage building on the previous one to achieve the overall objectives.
+
+The involvement of stakeholders in the evaluation and funding processes is crucial for the success of the project. By engaging stakeholders in the evaluation and funding processes, the project ensures that it receives the necessary support and resources to achieve its objectives. This collaborative approach is essential for the success of the project, ensuring that it meets the needs and expectations of all stakeholders.
+
+The project development and timeline represent a comprehensive approach to the exploration and utilization of NEAs, ensuring that the project meets its objectives and contributes to the broader goals of space exploration. By outlining a clear and structured development timeline, the project ensures that it progresses smoothly and efficiently, achieving its objectives and contributing to the advancement of space technology.
+`,
+    },
+    {
+      title: "7. Evaluation and Success Metrics",
+      content: `The evaluation and success metrics of this project are centered around measuring technological progress and scientific findings. By establishing clear criteria for evaluation, the project ensures that it meets its objectives and contributes to the broader goals of space exploration.
+
+The criteria for measuring technological progress include the development and testing of advanced rocket engines, the refinement of autonomous navigation systems, and the exploration of NEA orbit determination and resource utilization. These criteria are designed to ensure that the project achieves its objectives and contributes to the advancement of space technology.
+
+The focus on diverse research outputs beyond traditional metrics is essential for the success of the project. By considering a wide range of research outputs, the project ensures that it captures the full scope of its contributions to space exploration. This approach is essential for the success of the project, ensuring that it meets the needs and expectations of all stakeholders.
+
+Strategies for ensuring high-quality standards throughout the project are centered around rigorous testing and evaluation processes. By implementing rigorous testing and evaluation processes, the project ensures that it meets the highest standards of quality and reliability. This approach is essential for the success of the project, ensuring that it achieves its objectives and contributes to the advancement of space technology.`,
+    },
+
+    {
+      title: "8. Conclusion",
+      content: `The significance of this project lies in its potential impact on future space missions. By advancing propulsion technologies and autonomous navigation systems, the project contributes to the broader goals of space exploration, enabling more efficient and reliable missions to NEAs and beyond.
+
+The expected outcomes and contributions of this project are centered around the development of advanced propulsion technologies and autonomous navigation systems, the refinement of NEA orbit determination techniques, and the exploration of resource utilization on NEAs. These outcomes represent a significant step forward in the exploration and utilization of NEAs, contributing to the broader goals of space exploration.
+
+The importance of continued research and innovation in autonomous navigation and propulsion technologies cannot be overstated. By advancing these technologies, the project ensures that space exploration remains at the forefront of scientific and technological progress, enabling new possibilities for exploration and utilization.
+
+In conclusion, this project represents a significant step forward in the exploration and utilization of NEAs, contributing to the broader goals of space exploration. By advancing propulsion technologies and autonomous navigation systems, the project ensures that space exploration remains at the forefront of scientific and technological progress, enabling new possibilities for exploration and utilization.
+`,
+    },
+    // ... Add other sections here
+  ],
+};
 
 interface Message {
   id: number;
@@ -42,24 +135,19 @@ interface ChatSession {
   messages: Message[];
 }
 
-interface DocumentFile {
-  id: string;
-  name: string;
-  type: string;
-  uploadedAt: Date;
-  content: Blob;
-}
-export default function Home() {
+const Try = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [activeChatId, setActiveChatId] = useState<number>(1);
   const [inputMessage, setInputMessage] = useState<string>("");
   const [isDropupOpen, setIsDropupOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [showRfpModal, setShowRfpModal] = useState(false);
-  const [showProposalModal, setShowProposalModal] = useState(false);
-  const [showPromptModal, setShowPromptModal] = useState(false);
-
+  const [smallHoveredIndex, setSmallHoveredIndex] = useState<number | null>(
+    null
+  );
+  const [outputHoveredIndex, setOutputHoveredIndex] = useState<number | null>(
+    null
+  );
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([
     { id: 1, title: "Section 1", messages: [] },
     { id: 2, title: "Section 2", messages: [] },
@@ -70,26 +158,57 @@ export default function Home() {
 
   const topItems = [
     {
-      icon: problem,
+      icon: Files,
+      // icon: problem,
       text: "Project Info",
     },
     {
-      icon: problem,
+      // icon: FileInput,
+      icon: proInfo,
       text: "Template",
     },
     {
-      icon: proposal,
+      icon: MessageSquare,
+      // icon: proposal,
       text: "Prompt",
     },
     {
-      icon: agent,
+      icon: BookOpen,
+      // icon: agent,
       text: "Library",
     },
     {
-      icon: author,
+      icon: Building,
+      // icon: author,
       text: "Company Info",
     },
   ];
+
+  const bottomButtons = [
+    {
+      icon: Clipboard,
+      text: "Copy",
+    },
+    {
+      icon: RefreshCcw,
+      text: "Retry",
+    },
+    {
+      icon: ClipboardCopy,
+      text: "Publish",
+    },
+  ];
+  const outputButtons = [
+    {
+      icon: Clipboard,
+      text: "Copy",
+    },
+    {
+      icon: Download,
+      text: "Download",
+    },
+  ];
+
   const sideItems = [
     {
       icon: review,
@@ -108,14 +227,14 @@ export default function Home() {
       text: "History",
     },
   ];
-  const [activeModal, setActiveModal] = useState(null); // State to handle active modal
+  const [activeModal, setActiveModal] = useState<string | null>(null); // State to handle active modal
   const files = [
-    { icon: pdf, text: "documentOne.txt" },
-    { icon: pdf, text: "documentTwo.txt" },
-    { icon: pdf, text: "documentThree.txt" },
+    { text: "documentOne.txt" },
+    { text: "documentTwo.txt" },
+    { text: "documentThree.txt" },
   ];
 
-  const recentChats = ["Section 1", "Section 2", "Section 3"];
+  // const recentChats = ["Section 1", "Section 2", "Section 3"];
 
   const handleSendMessage = () => {
     if (inputMessage.trim() === "") return;
@@ -177,14 +296,14 @@ export default function Home() {
   //   }
   // };
 
-  const handleTopItemClick = (text) => {
-    setActiveModal((prev) => (prev === text ? null : text));
+  const handleTopItemClick = (text: string | null) => {
+    setActiveModal((prev: string | null) => (prev === text ? null : text));
   };
 
   const renderModal = () => {
     switch (activeModal) {
       case "Project Info":
-        return <ProjectInfoForm closeModal={() => setActiveModal(null)} />;
+        return <ProjectInfo closeModal={() => setActiveModal(null)} />;
       case "Template":
         return <TemplateForm closeModal={() => setActiveModal(null)} />;
       case "Prompt":
@@ -192,15 +311,31 @@ export default function Home() {
       case "Library":
         return <LibraryForm closeModal={() => setActiveModal(null)} />;
       case "Company Info":
-        return <CompanyInfoForm closeModal={() => setActiveModal(null)} />;
+        return <CompanyForm closeModal={() => setActiveModal(null)} />;
       default:
         return null;
     }
   };
 
+  // const [lastEdited] = useState("6 minutes ago");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRef.current) {
+        scrollRef.current.style.overflowY = "auto";
+      }
+    };
+
+    window.addEventListener("resize", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("resize", handleScroll);
+  }, []);
+
   return (
     <div className="container mx-auto py-5 px-5 h-screen flex flex-col ">
-      <div className="relative flex flex-1 gap-[10px]">
+      <div className="relative flex flex-1 gap-[10px]  overflow-hidden">
         {/* Sidebar */}
         <div
           className={`absolute left-0 top-0 h-full bg-slate-800 rounded-xl z-[999] transition-all duration-300 ease-in-out`}
@@ -211,6 +346,7 @@ export default function Home() {
             overflow: "hidden",
           }}
         >
+          <h1>this is try page</h1>
           {/* <div className="p-4">
             <div className="flex items-center justify-between p-4">
               <h1
@@ -254,32 +390,38 @@ export default function Home() {
             </div>
           </div> */}
           <div className="w-64 border-r border-gray-800 flex flex-col  h-full">
-            <div className="p-4">
-              <h1 className="text-xl font-bold text-blue-400">SAGAN</h1>
+            <div className="p-4 flex   justify-start">
+              {/* <img src={Logo} className="w-8 h-8 object-contain" /> */}
+              <h1
+                className="text-transparent bg-clip-text
+                  bg-gradient-to-r from-blue-400 to-purple-400   text-2xl font-bold"
+              >
+                SAGAN
+              </h1>
             </div>
             <hr className="border-gray-800" />
             <div className="flex  flex-col h-full">
               <div className="flex-1 overflow-y-auto">
                 <div className="p-4">
                   <div className="mb-6">
-                    <h2 className="text-sm font-semibold text-gray-400 mb-2">
+                    <h2 className="text-sm font-semibold text-white mb-2">
                       LITERATURE FILES
                     </h2>
-                    {/* <div className="space-y-2">
-                      {documents.map((doc) => (
+                    <div className="space-y-2">
+                      {files.map((doc, index) => (
                         <div
-                          key={doc.id}
+                          key={index}
                           className="flex items-center gap-2 text-sm text-gray-300 hover:text-white cursor-pointer"
-                          onClick={() => handleDocumentClick(doc)}
+                          // onClick={() => handleDocumentClick(doc)}
                         >
                           <FileText className="h-4 w-4" />
-                          <span>{doc.name}</span>
+                          <span>{doc.text}</span>
                         </div>
                       ))}
-                    </div> */}
+                    </div>
                   </div>
                   <div>
-                    <h2 className="text-sm font-semibold text-gray-400 mb-2">
+                    <h2 className="text-sm font-semibold text-white mb-2">
                       SECTION OUTLINED
                     </h2>
                     <div className="space-y-2">
@@ -320,17 +462,26 @@ export default function Home() {
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <button
-                    className="flex flex-col items-center p-2 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                    className="flex flex-col items-center p-2 rounded-lg "
                     onClick={() => handleTopItemClick(item.text)}
                   >
-                    <img
+                    {/* {item?.icon === problem ? (
+                      <img
+                        src={item.icon}
+                        className="w-8 h-8 "
+                        alt={item.text}
+                      />
+                    ) : ( */}
+                    <item.icon className="text-white  w-8 h-8" />
+                    {/* )} */}
+                    {/* <img
                       src={item.icon}
                       className="w-8 h-8  text-white"
                       alt={item.text}
-                    />
+                    /> */}
                   </button>
                   {hoveredIndex === index && (
-                    <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 px-2 py-1 bg-slate-800 text-slate-200 text-xs rounded whitespace-nowrap z-10">
+                    <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 px-2 py-1 bg-black text-slate-200 text-xs rounded whitespace-nowrap z-10">
                       {item.text}
                       <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-slate-800"></div>
                     </div>
@@ -359,7 +510,7 @@ export default function Home() {
 
             {/* Render the active modal */}
             {activeModal && (
-              <div className="absolute z-[99] flex items-start top-[100px] w-full">
+              <div className="absolute z-[99] flex items-center  justify-center top-[100px] w-full  ">
                 {renderModal()}
               </div>
             )}
@@ -413,47 +564,74 @@ export default function Home() {
                       </div>
                     ))}
                   </div> */}
-                  <div className="min-h-[100px] max-h-[500px] overflow-y-auto p-4 space-y-2">
-                    {activeChat.messages.map((message) => (
-                      <>
-                        <div
-                          key={message.id}
-                          className={`p-2 rounded-lg ${
-                            message.sender === "user"
-                              ? "bg-blue-500/10 border border-blue-500/20 ml-auto text-slate-300"
-                              : "bg-slate-700/50 border border-slate-600 text-slate-300"
-                          } max-w-[80%]`}
-                        >
-                          {message.text}
+                  <div className="min-h-[200px] max-h-[500px] overflow-y-auto p-4 space-y-2">
+                    {activeChat.messages.map((message, index) => {
+                      const isRecentAI =
+                        message.sender !== "user" &&
+                        index === activeChat.messages.length - 1;
+                      return (
+                        <div className="relative flex flex-col group ">
+                          <div
+                            key={message.id}
+                            className={`p-2  rounded-lg ${
+                              message.sender === "user"
+                                ? "bg-blue-500/10 border border-blue-500/20 ml-auto text-slate-300"
+                                : "bg-slate-700/50 border border-slate-600 text-slate-300"
+                            } max-w-[80%]`}
+                          >
+                            {message.text}
 
-                          {/* Conditionally render buttons below AI messages */}
+                            {/* Conditionally render buttons below AI messages */}
+                          </div>
+                          <div className="flex flex-col ">
+                            {message.sender !== "user" && (
+                              <div
+                                // className="flex space-x-2 mt-2"
+                                className={`${
+                                  isRecentAI ? "flex" : " group-hover:flex"
+                                } space-x-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                              >
+                                {bottomButtons?.map((item, index) => (
+                                  <div
+                                    key={index}
+                                    className="relative"
+                                    onMouseEnter={() =>
+                                      setSmallHoveredIndex(index)
+                                    }
+                                    onMouseLeave={() =>
+                                      setSmallHoveredIndex(null)
+                                    }
+                                  >
+                                    <button className="flex flex-col items-center p-2 rounded-lg  transition-colors duration-200">
+                                      <item.icon className="w-5 h-5 text-white" />
+                                    </button>
+                                    {smallHoveredIndex === index && (
+                                      <div className="absolute left-1/2 transform -translate-x-1/2 top-full   py-2 px-3 bg-black text-slate-200 text-xs rounded whitespace-nowrap z-10">
+                                        {item.text}
+                                        <div className="absolute left-1/2 transform -translate-x-1/2 bottom-full w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-slate-800"></div>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                                {/* <button className="p-1  text-slate-300 rounded hover:bg-gray-600 transition-colors">
+                                  <Clipboard className="w-5 h-5 mr-1" />
+                                </button>
+                                <button className="p-1  text-white rounded ">
+                                  <RefreshCcw className="w-5 h-5 mr-1" />
+                                </button>
+
+                                <button className="p-1  text-white rounded ">
+                                  <ClipboardCopy className="w-5 h-5 mr-1" />
+                                </button> */}
+                                {/* Clipboard Button with Tooltip */}
+                                {/* Refresh Button with Tooltip */}
+                                {/* Clipboard Copy Button with Tooltip */}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          {message.sender !== "user" && (
-                            <div className="flex space-x-2 mt-2">
-                              <button
-                                // onClick={() => handleCopy(message.text)}
-                                className="p-1 bg-gray-700 text-slate-300 rounded hover:bg-gray-600 transition-colors"
-                              >
-                                <Clipboard className="w-4 h-4 mr-1" />
-                              </button>
-                              <button
-                                // onClick={handleRestart}
-                                className="p-1  text-white rounded "
-                              >
-                                <RefreshCcw className="w-4 h-4 mr-1" />
-                              </button>
-                              <button
-                                // onClick={() => handlePublish(message)}
-                                className="p-1  text-white rounded  transition-colors"
-                              >
-                                Publish
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   <div className="flex items-center p-4 border-t border-slate-700">
@@ -481,1176 +659,73 @@ export default function Home() {
         </div>
 
         {/* Document viewer */}
-        <div className="w-1/3 flex flex-col gap-[5px]">
+        <div className="w-[40%] flex flex-col gap-[5px]">
           <div className="basis-[5%] flex justify-between px-4 bg-slate-900 border border-slate-700 rounded-xl">
             {sideItems.map((item, index) => (
               <button
                 key={index}
-                className="flex flex-col items-center  p-2 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                className="flex flex-col items-center  p-2 rounded-lg  transition-colors duration-200"
               >
                 <img src={item.icon} className="w-5 h-5  " alt={item.text} />
                 <span className="text-xs  text-white">{item.text}</span>
               </button>
             ))}
           </div>
-          <div className="basis-[95%] bg-slate-900 border border-slate-700 rounded-xl p-4 overflow-y-auto"></div>
-        </div>
-      </div>
-    </div>
-  );
-}
+          <div className="basis-[95%] bg-slate-900 border border-slate-700 rounded-xl overflow-hidden overflow-y-auto flex justify-between flex-col">
+            <div className="basis-[98%]  py-2 px-4 overflow-y-scroll  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-800 hover:scrollbar-thumb-gray-500">
+              {/* Content Area */}
+              <div ref={scrollRef} className="flex-1  ">
+                <div className=" mx-auto space-y-8  ">
+                  <h1 className="text-2xl font-semibold mb-12  text-white">
+                    {content.title}
+                  </h1>
 
-interface prop {
-  closeModal: () => void;
-}
-// Example form for "Project Info"
-function ProjectInfoForm({ closeModal }: prop) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Modal */}
-      <div className="relative w-full max-w-md bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
-        {/* Close Button */}
-        <button
-          onClick={closeModal}
-          className="absolute top-4 right-4 text-slate-400 hover:text-blue-400 transition-colors"
-        >
-          <X size={20} />
-        </button>
-
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
-          Project Information
-        </h2>
-
-        {/* Form */}
-        <form
-          // onSubmit={handleSubmit}
-          className="space-y-4"
-        >
-          {/* Project Name */}
-          <div>
-            <label
-              htmlFor="projectName"
-              className="block text-sm font-medium text-slate-300 mb-1"
-            >
-              Project Name
-            </label>
-            <input
-              type="text"
-              id="projectName"
-              className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                       text-slate-300 placeholder-slate-500 
-                       focus:outline-none focus:border-blue-500/50
-                       transition-colors"
-              placeholder="Enter project name"
-            />
-          </div>
-
-          {/* Project Description */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-slate-300 mb-1"
-            >
-              Project Description
-            </label>
-            <textarea
-              id="description"
-              rows={4}
-              className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                       text-slate-300 placeholder-slate-500 
-                       focus:outline-none focus:border-blue-500/50
-                       transition-colors resize-none"
-              placeholder="Enter project description"
-            />
-          </div>
-
-          {/* Issuing Organization */}
-          <div>
-            <label
-              htmlFor="issuingOrg"
-              className="block text-sm font-medium text-slate-300 mb-1"
-            >
-              Issuing Organization
-            </label>
-            <input
-              type="text"
-              id="issuingOrg"
-              className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                       text-slate-300 placeholder-slate-500 
-                       focus:outline-none focus:border-blue-500/50
-                       transition-colors"
-              placeholder="Enter issuing organization"
-            />
-          </div>
-
-          {/* Link to Call */}
-          <div>
-            <label
-              htmlFor="callLink"
-              className="block text-sm font-medium text-slate-300 mb-1"
-            >
-              Link to Call
-            </label>
-            <input
-              type="url"
-              id="callLink"
-              className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                       text-slate-300 placeholder-slate-500 
-                       focus:outline-none focus:border-blue-500/50
-                       transition-colors"
-              placeholder="https://"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                     text-blue-400 font-medium
-                     hover:bg-blue-500/20 transition-all
-                     focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-          >
-            Submit
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-// Example form for "Template"
-function TemplateForm({ closeModal }: prop) {
-  const [proposalFile, setProposalFile] = useState(null);
-  const [additionalFiles, setAdditionalFiles] = useState(null);
-  const handleProposalUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProposalFile(file);
-    }
-  };
-
-  const handleAdditionalUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setAdditionalFiles(file);
-    }
-  };
-
-  const clearProposalFile = () => {
-    setProposalFile(null);
-  };
-
-  const clearAdditionalFiles = () => {
-    setAdditionalFiles(null);
-  };
-
-  return (
-    <div className="relative w-full max-w-md bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
-      {/* Close Button */}
-      <button
-        onClick={closeModal}
-        className="absolute top-4 right-4 text-slate-400 hover:text-blue-400 transition-colors"
-      >
-        <X size={20} />
-      </button>
-
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
-        Upload Files
-      </h2>
-
-      <div className="space-y-6">
-        {/* Proposal Template Upload */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <input
-              type="file"
-              id="proposalUpload"
-              className="hidden"
-              onChange={handleProposalUpload}
-              accept=".pdf,.doc,.docx"
-            />
-            <label
-              htmlFor="proposalUpload"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                text-blue-400 font-medium hover:bg-blue-500/20 transition-all cursor-pointer"
-            >
-              <Paperclip className="h-4 w-4" />
-              <span>Upload Proposal Template</span>
-            </label>
-          </div>
-          {proposalFile && (
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <span className="truncate max-w-[200px]">
-                {proposalFile?.name}
-              </span>
-              <button
-                onClick={clearProposalFile}
-                className="text-slate-400 hover:text-blue-400 transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Additional Files Upload */}
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <input
-              type="file"
-              id="additionalUpload"
-              className="hidden"
-              onChange={handleAdditionalUpload}
-              accept=".pdf,.doc,.docx,.jpg,.png"
-            />
-            <label
-              htmlFor="additionalUpload"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                text-blue-400 font-medium hover:bg-blue-500/20 transition-all cursor-pointer"
-            >
-              <Paperclip className="h-4 w-4" />
-              <span>Upload Additional Files</span>
-            </label>
-          </div>
-          {additionalFiles && (
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <span className="truncate max-w-[200px]">
-                {additionalFiles?.name}
-              </span>
-              <button
-                onClick={clearAdditionalFiles}
-                className="text-slate-400 hover:text-blue-400 transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Submit Button */}
-        <button
-          // onClick={handleSubmit}
-          className="w-full px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-            text-blue-400 font-medium hover:bg-blue-500/20 transition-all
-            focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Example form for "Prompt"
-function PromptForm({ closeModal }: prop) {
-  const [selectedModel, setSelectedModel] = useState("");
-  const [selectedRole, setSelectedRole] = useState("");
-  const [promptType, setPromptType] = useState("default");
-  const [customPrompt, setCustomPrompt] = useState("");
-
-  const models = [
-    { value: "gpt", label: "GPT-4" },
-    { value: "gemini", label: "Gemini" },
-    { value: "llama", label: "LLaMA" },
-  ];
-
-  const roles = [
-    { value: "project_manager", label: "Project Manager" },
-    { value: "system_engineer", label: "System Engineer" },
-    { value: "software_architect", label: "Software Architect" },
-    { value: "business_analyst", label: "Business Analyst" },
-    { value: "technical_lead", label: "Technical Lead" },
-    { value: "ux_designer", label: "UX Designer" },
-  ];
-
-  const defaultPrompts = {
-    project_manager:
-      "As a Project Manager, analyze the project requirements and provide a detailed project plan including milestones, resources, and timeline.",
-    system_engineer:
-      "As a System Engineer, evaluate the system architecture and provide technical specifications and implementation recommendations.",
-    software_architect:
-      "As a Software Architect, design a scalable and maintainable architecture considering the given requirements and constraints.",
-    business_analyst:
-      "As a Business Analyst, analyze the business requirements and provide detailed functional specifications.",
-    technical_lead:
-      "As a Technical Lead, provide technical guidance and best practices for implementation.",
-    ux_designer:
-      "As a UX Designer, analyze the user requirements and provide wireframes and user flow recommendations.",
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const promptData = {
-      model: selectedModel,
-      role: selectedRole,
-      prompt:
-        promptType === "default" ? defaultPrompts[selectedRole] : customPrompt,
-    };
-    console.log("Submitted data:", promptData);
-    closeModal();
-  };
-
-  return (
-    // <div className="bg-white p-4 rounded shadow-lg w-1/2">
-    //   <h2 className="text-lg font-bold mb-4">Prompt</h2>
-    //   <form>
-    //     <div className="mb-4">
-    //       <label
-    //         htmlFor="promptText"
-    //         className="block mb-2 text-sm font-medium text-gray-700"
-    //       >
-    //         Prompt Text
-    //       </label>
-    //       <input
-    //         type="text"
-    //         id="promptText"
-    //         className="w-full px-3 py-2 border rounded"
-    //         placeholder="Enter prompt"
-    //       />
-    //     </div>
-    //     <button
-    //       type="button"
-    //       onClick={closeModal}
-    //       className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-    //     >
-    //       Close
-    //     </button>
-    //   </form>
-    // </div>
-
-    <div className="relative w-full max-w-md bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
-      {/* Close Button */}
-      <button
-        onClick={closeModal}
-        className="absolute top-4 right-4 text-slate-400 hover:text-blue-400 transition-colors"
-      >
-        <X size={20} />
-      </button>
-
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
-        Configure Prompt
-      </h2>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Model Selection */}
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
-            Select Model
-          </label>
-          <select
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                       text-slate-300 
-                       focus:outline-none focus:border-blue-500/50
-                       transition-colors"
-          >
-            <option value="">Select a model</option>
-            {models.map((model) => (
-              <option key={model.value} value={model.value}>
-                {model.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Role Selection */}
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
-            Select Role
-          </label>
-          <select
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                       text-slate-300 
-                       focus:outline-none focus:border-blue-500/50
-                       transition-colors"
-          >
-            <option value="">Select a role</option>
-            {roles.map((role) => (
-              <option key={role.value} value={role.value}>
-                {role.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Prompt Type Selection */}
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
-            Prompt Type
-          </label>
-          <div className="flex space-x-4">
-            <label className="flex items-center text-slate-300">
-              <input
-                type="radio"
-                value="default"
-                checked={promptType === "default"}
-                onChange={(e) => setPromptType(e.target.value)}
-                className="mr-2 text-blue-500 focus:ring-blue-500"
-              />
-              Default Prompt
-            </label>
-            <label className="flex items-center text-slate-300">
-              <input
-                type="radio"
-                value="custom"
-                checked={promptType === "custom"}
-                onChange={(e) => setPromptType(e.target.value)}
-                className="mr-2 text-blue-500 focus:ring-blue-500"
-              />
-              Custom Prompt
-            </label>
-          </div>
-        </div>
-
-        {/* Prompt Display/Input */}
-        <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">
-            {promptType === "default"
-              ? "Default Prompt"
-              : "Enter Custom Prompt"}
-          </label>
-          {promptType === "default" ? (
-            <div
-              className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                            text-slate-300 min-h-[100px]"
-            >
-              {selectedRole
-                ? defaultPrompts[selectedRole]
-                : "Select a role to see the default prompt"}
-            </div>
-          ) : (
-            <textarea
-              value={customPrompt}
-              onChange={(e) => setCustomPrompt(e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                         text-slate-300 placeholder-slate-500 
-                         focus:outline-none focus:border-blue-500/50
-                         transition-colors resize-none"
-              placeholder="Enter your custom prompt here..."
-            />
-          )}
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                     text-blue-400 font-medium
-                     hover:bg-blue-500/20 transition-all
-                     focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-        >
-          Submit
-        </button>
-      </form>
-    </div>
-  );
-}
-
-// Example form for "Library"
-function LibraryForm({ closeModal }: prop) {
-  const [sotaFiles, setSotaFiles] = useState([]);
-  const [methodologyFiles, setMethodologyFiles] = useState([]);
-  const [otherFiles, setOtherFiles] = useState([]);
-
-  const handleFileUpload = (event, section) => {
-    const files = Array.from(event.target.files);
-    switch (section) {
-      case "sota":
-        setSotaFiles((prev) => [...prev, ...files]);
-        break;
-      case "methodology":
-        setMethodologyFiles((prev) => [...prev, ...files]);
-        break;
-      case "other":
-        setOtherFiles((prev) => [...prev, ...files]);
-        break;
-    }
-    // Reset input value to allow uploading the same file again
-    event.target.value = "";
-  };
-
-  const removeFile = (fileName, section) => {
-    switch (section) {
-      case "sota":
-        setSotaFiles((prev) => prev.filter((file) => file.name !== fileName));
-        break;
-      case "methodology":
-        setMethodologyFiles((prev) =>
-          prev.filter((file) => file.name !== fileName)
-        );
-        break;
-      case "other":
-        setOtherFiles((prev) => prev.filter((file) => file.name !== fileName));
-        break;
-    }
-  };
-
-  const handleSubmit = () => {
-    const libraryData = {
-      sota: sotaFiles,
-      methodology: methodologyFiles,
-      other: otherFiles,
-    };
-    console.log("Submitted library data:", libraryData);
-    closeModal();
-  };
-  const FileList = ({ files, section }) => (
-    <div className="mt-2 space-y-2">
-      {files.map((file, index) => (
-        <div
-          key={`${file.name}-${index}`}
-          className="flex items-center justify-between px-3 py-2 bg-slate-900/30 rounded-lg border border-slate-700"
-        >
-          <span className="text-sm text-slate-300 truncate max-w-[200px]">
-            {file.name}
-          </span>
-          <button
-            onClick={() => removeFile(file.name, section)}
-            className="text-slate-400 hover:text-red-400 transition-colors ml-2"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-  const UploadSection = ({ title, section, files, accept = "*" }) => (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <input
-          type="file"
-          id={`${section}Upload`}
-          className="hidden"
-          onChange={(e) => handleFileUpload(e, section)}
-          multiple
-          accept={accept}
-        />
-        <label
-          htmlFor={`${section}Upload`}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-          text-blue-400 font-medium hover:bg-blue-500/20 transition-all cursor-pointer w-full"
-        >
-          <Paperclip className="h-4 w-4" />
-          <span>{title}</span>
-        </label>
-      </div>
-      <FileList files={files} section={section} />
-    </div>
-  );
-
-  return (
-    <div className="relative w-full max-w-md bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6">
-      {/* Close Button */}
-      <button
-        onClick={closeModal}
-        className="absolute top-4 right-4 text-slate-400 hover:text-blue-400 transition-colors"
-      >
-        <X size={20} />
-      </button>
-
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
-        Library Upload
-      </h2>
-
-      {/* Upload Sections */}
-      <div className="space-y-6">
-        {/* SOTA Upload */}
-        <UploadSection
-          title="Upload SOTA Files"
-          section="sota"
-          files={sotaFiles}
-          accept=".pdf,.doc,.docx"
-        />
-
-        {/* Methodology Upload */}
-        <UploadSection
-          title="Upload Methodology Files"
-          section="methodology"
-          files={methodologyFiles}
-          accept=".pdf,.doc,.docx"
-        />
-
-        {/* Other Upload */}
-        <UploadSection
-          title="Upload Other Files"
-          section="other"
-          files={otherFiles}
-          accept=".pdf,.doc,.docx,.jpg,.png"
-        />
-
-        {/* Submit Button */}
-        <button
-          onClick={handleSubmit}
-          className="w-full px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                     text-blue-400 font-medium
-                     hover:bg-blue-500/20 transition-all
-                     focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-  );
-}
-
-type CustomField = {
-  id: number;
-  label: string;
-  value: string;
-};
-
-// Type for a custom section
-type CustomSection = {
-  id: string;
-  title: string;
-  fields: CustomField[];
-};
-
-// Props type for CompanyInfoModal component
-interface CompanyInfoModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-// Props type for InputField component
-interface InputFieldProps {
-  label: string;
-  value: string;
-  onChange: InputChangeHandler;
-  type?: string;
-}
-
-type FormData = {
-  company: {
-    name: string;
-    address: string;
-    teamSize: string;
-    website: string;
-  };
-  author: {
-    firstName: string;
-    lastName: string;
-    position: string;
-  };
-  pi: {
-    firstName: string;
-    lastName: string;
-    position: string;
-  };
-  copi: {
-    firstName: string;
-    lastName: string;
-    position: string;
-  };
-};
-// Example form for "Company Info"
-
-type Section = {
-  id: string;
-  fields: { id: number; label: string; value: string }[];
-};
-function CompanyInfoForm({ closeModal }: prop) {
-  const [selectedSection, setSelectedSection] = useState("company");
-  const [customSections, setCustomSections] = useState<Section[]>([]);
-  const [authorResume, setAuthorResume] = useState(null);
-  const [piResume, setPiResume] = useState(null);
-  const [copiResume, setCopiResume] = useState(null);
-  const [useAuthorInfo, setUseAuthorInfo] = useState(false);
-
-  const [formData, setFormData] = useState({
-    company: {
-      name: "",
-      address: "",
-      teamSize: "",
-      website: "",
-    },
-    author: {
-      firstName: "",
-      lastName: "",
-      position: "",
-    },
-    pi: {
-      firstName: "",
-      lastName: "",
-      position: "",
-    },
-    copi: {
-      firstName: "",
-      lastName: "",
-      position: "",
-    },
-  });
-
-  const handleSectionChange = (e) => {
-    const value = e.target.value;
-    if (value === "add_section") {
-      addCustomSection();
-    } else {
-      setSelectedSection(value);
-    }
-  };
-
-  const handleInputChange = (section, field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value,
-      },
-    }));
-  };
-
-  const handleFileUpload = (event, setFileState) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFileState(file);
-    }
-  };
-
-  const handleUseAuthorInfo = () => {
-    setUseAuthorInfo(true);
-    setFormData((prev) => ({
-      ...prev,
-      pi: {
-        ...prev.author,
-      },
-    }));
-  };
-
-  const addCustomSection = () => {
-    const newSection = {
-      id: `custom-${Date.now()}`,
-      title: `Custom Section ${customSections.length + 1}`,
-      fields: [],
-    };
-    setCustomSections((prev) => [...prev, newSection]);
-    setSelectedSection(newSection.id);
-  };
-
-  const addCustomField = (sectionId) => {
-    setCustomSections((prev) =>
-      prev.map((section) => {
-        if (section.id === sectionId) {
-          return {
-            ...section,
-            fields: [
-              ...section.fields,
-              {
-                id: Date.now(),
-                label: `Field ${section.fields.length + 1}`,
-                value: "",
-              },
-            ],
-          };
-        }
-        return section;
-      })
-    );
-  };
-
-  const InputField = ({ label, value, onChange, type = "text" }) => (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-slate-300 mb-1">
-        {label}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                 text-slate-300 placeholder-slate-500 
-                 focus:outline-none focus:border-blue-500/50
-                 transition-colors"
-      />
-    </div>
-  );
-
-  const sections = [
-    { value: "company", label: "Company Information" },
-    { value: "author", label: "Author Information" },
-    { value: "pi", label: "Principal Investigator (PI)" },
-    { value: "copi", label: "Co-Principal Investigator (Co-PI)" },
-    ...customSections.map((section) => ({
-      value: section?.id,
-      label: section?.title,
-    })),
-    { value: "add_section", label: "+ Add New Section" },
-  ];
-
-  const renderSection = () => {
-    switch (selectedSection) {
-      case "company":
-        return (
-          <div className="space-y-4">
-            <InputField
-              label="Company Name"
-              value={formData.company.name}
-              onChange={(e) =>
-                handleInputChange("company", "name", e.target.value)
-              }
-            />
-            <InputField
-              label="Company Address"
-              value={formData.company.address}
-              onChange={(e) =>
-                handleInputChange("company", "address", e.target.value)
-              }
-            />
-            <InputField
-              label="Team Size"
-              value={formData.company.teamSize}
-              onChange={(e) =>
-                handleInputChange("company", "teamSize", e.target.value)
-              }
-              type="number"
-            />
-            <InputField
-              label="Company Website"
-              value={formData.company.website}
-              onChange={(e) =>
-                handleInputChange("company", "website", e.target.value)
-              }
-              type="url"
-            />
-          </div>
-        );
-
-      case "author":
-        return (
-          <div className="space-y-4">
-            <InputField
-              label="First Name"
-              value={formData.author.firstName}
-              onChange={(e) =>
-                handleInputChange("author", "firstName", e.target.value)
-              }
-            />
-            <InputField
-              label="Last Name"
-              value={formData.author.lastName}
-              onChange={(e) =>
-                handleInputChange("author", "lastName", e.target.value)
-              }
-            />
-            <InputField
-              label="Position"
-              value={formData.author.position}
-              onChange={(e) =>
-                handleInputChange("author", "position", e.target.value)
-              }
-            />
-            <div>
-              <input
-                type="file"
-                id="authorResume"
-                className="hidden"
-                onChange={(e) => handleFileUpload(e, setAuthorResume)}
-                accept=".pdf,.doc,.docx"
-              />
-              <label
-                htmlFor="authorResume"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                text-blue-400 font-medium hover:bg-blue-500/20 transition-all cursor-pointer w-fit"
-              >
-                <Paperclip className="h-4 w-4" />
-                <span>Upload Resume</span>
-              </label>
-              {authorResume && (
-                <div className="mt-2 text-sm text-slate-300">
-                  {authorResume.name}
+                  {content.sections.map((section, index) => (
+                    <section key={index} className="space-y-4  ">
+                      <h2 className="text-xl font-semibold  text-white">
+                        {section.title}
+                      </h2>
+                      {section.content
+                        .split("\n\n")
+                        .map((paragraph, pIndex) => (
+                          <p
+                            key={pIndex}
+                            className="leading-relaxed text-gray-300"
+                          >
+                            {paragraph}
+                          </p>
+                        ))}
+                    </section>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        );
+            <div className="basis[2%]  flex justify-end  bg-slate-800 ">
+              {outputButtons?.map((item, index) => (
+                <div
+                  key={index}
+                  className="relative pr-4"
+                  onMouseEnter={() => setOutputHoveredIndex(index)}
+                  onMouseLeave={() => setOutputHoveredIndex(null)}
+                >
+                  <button className="flex flex-col items-center p-2 rounded-lg  transition-colors duration-200">
+                    <item.icon className="w-5 h-5 text-white" />
+                  </button>
 
-      case "pi":
-        return (
-          <div className="space-y-4">
-            <button
-              onClick={handleUseAuthorInfo}
-              className="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                       text-blue-400 font-medium hover:bg-blue-500/20 transition-all"
-            >
-              Same as Author
-            </button>
-            <InputField
-              label="First Name"
-              value={formData.pi.firstName}
-              onChange={(e) =>
-                handleInputChange("pi", "firstName", e.target.value)
-              }
-            />
-            <InputField
-              label="Last Name"
-              value={formData.pi.lastName}
-              onChange={(e) =>
-                handleInputChange("pi", "lastName", e.target.value)
-              }
-            />
-            <InputField
-              label="Position"
-              value={formData.pi.position}
-              onChange={(e) =>
-                handleInputChange("pi", "position", e.target.value)
-              }
-            />
-            <div>
-              <input
-                type="file"
-                id="piResume"
-                className="hidden"
-                onChange={(e) => handleFileUpload(e, setPiResume)}
-                accept=".pdf,.doc,.docx"
-              />
-              <label
-                htmlFor="piResume"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                text-blue-400 font-medium hover:bg-blue-500/20 transition-all cursor-pointer w-fit"
-              >
-                <Paperclip className="h-4 w-4" />
-                <span>Upload Resume</span>
-              </label>
-              {piResume && (
-                <div className="mt-2 text-sm text-slate-300">
-                  {piResume.name}
+                  {outputHoveredIndex === index && (
+                    <div className="absolute left-1/4 transform -translate-x-1/2 bottom-full mb-2 py-2 px-2 bg-black text-slate-200 text-xs rounded whitespace-nowrap z-10">
+                      {item.text}
+                      <div className="absolute left-1/2 transform -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black"></div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        );
-
-      case "copi":
-        return (
-          <div className="space-y-4">
-            <InputField
-              label="First Name"
-              value={formData.copi.firstName}
-              onChange={(e) =>
-                handleInputChange("copi", "firstName", e.target.value)
-              }
-            />
-            <InputField
-              label="Last Name"
-              value={formData.copi.lastName}
-              onChange={(e) =>
-                handleInputChange("copi", "lastName", e.target.value)
-              }
-            />
-            <InputField
-              label="Position"
-              value={formData.copi.position}
-              onChange={(e) =>
-                handleInputChange("copi", "position", e.target.value)
-              }
-            />
-            <div>
-              <input
-                type="file"
-                id="copiResume"
-                className="hidden"
-                onChange={(e) => handleFileUpload(e, setCopiResume)}
-                accept=".pdf,.doc,.docx"
-              />
-              <label
-                htmlFor="copiResume"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                text-blue-400 font-medium hover:bg-blue-500/20 transition-all cursor-pointer w-fit"
-              >
-                <Paperclip className="h-4 w-4" />
-                <span>Upload Resume</span>
-              </label>
-              {copiResume && (
-                <div className="mt-2 text-sm text-slate-300">
-                  {copiResume.name}
-                </div>
-              )}
-            </div>
-          </div>
-        );
-
-      // default:
-      //   const customSection = customSections.find(
-      //     (section) => section.id === selectedSection
-      //   );
-      //   if (customSection) {
-      //     return (
-      //       <div className="space-y-4">
-      //         {customSection.fields.map((field) => (
-      //           <InputField
-      //             key={field.id}
-      //             label={field.label}
-      //             value={field.value}
-      //             onChange={(e) => {
-      //               setCustomSections((prev) =>
-      //                 prev.map((s) => {
-      //                   if (s.id === customSection.id) {
-      //                     return {
-      //                       ...s,
-      //                       fields: s.fields.map((f) =>
-      //                         f.id === field.id
-      //                           ? { ...f, value: e.target.value }
-      //                           : f
-      //                       ),
-      //                     };
-      //                   }
-      //                   return s;
-      //                 })
-      //               );
-      //             }}
-      //           />
-      //         ))}
-      //         <button
-      //           onClick={() => addCustomField(customSection.id)}
-      //           className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
-      //         >
-      //           <Plus size={16} />
-      //           <span>Add Field</span>
-      //         </button>
-      //       </div>
-      //     );
-      //   }
-      //   return null;
-
-      case "customSectionId": {
-        const customSection = customSections.find(
-          (section) => section.id === selectedSection
-        );
-        if (customSection) {
-          return (
-            <div className="space-y-4">
-              {customSection.fields.map((field) => (
-                <InputField
-                  key={field.id}
-                  label={field.label}
-                  value={field.value}
-                  onChange={(e) => {
-                    setCustomSections((prev) =>
-                      prev.map((s) => {
-                        if (s.id === customSection.id) {
-                          return {
-                            ...s,
-                            fields: s.fields.map((f) =>
-                              f.id === field.id
-                                ? { ...f, value: e.target.value }
-                                : f
-                            ),
-                          };
-                        }
-                        return s;
-                      })
-                    );
-                  }}
-                />
               ))}
             </div>
-          );
-        }
-        break;
-      }
-    }
-  };
-
-  return (
-    // <div className="bg-white p-4 rounded shadow-lg w-1/2">
-    //   <h2 className="text-lg font-bold mb-4">Company Info</h2>
-    //   <form>
-    //     <div className="mb-4">
-    //       <label
-    //         htmlFor="companyName"
-    //         className="block mb-2 text-sm font-medium text-gray-700"
-    //       >
-    //         Company Name
-    //       </label>
-    //       <input
-    //         type="text"
-    //         id="companyName"
-    //         className="w-full px-3 py-2 border rounded"
-    //         placeholder="Enter company name"
-    //       />
-    //     </div>
-    //     <div className="mb-4">
-    //       <label
-    //         htmlFor="address"
-    //         className="block mb-2 text-sm font-medium text-gray-700"
-    //       >
-    //         Address
-    //       </label>
-    //       <input
-    //         type="text"
-    //         id="address"
-    //         className="w-full px-3 py-2 border rounded"
-    //         placeholder="Enter address"
-    //       />
-    //     </div>
-    //     <button
-    //       type="button"
-    //       onClick={closeModal}
-    //       className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-    //     >
-    //       Close
-    //     </button>
-    //   </form>
-    // </div>
-
-    <div className="relative w-full max-w-2xl bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 mx-4">
-      {/* Close Button */}
-      <button
-        onClick={closeModal}
-        className="absolute top-4 right-4 text-slate-400 hover:text-blue-400 transition-colors"
-      >
-        <X size={20} />
-      </button>
-
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-6">
-        Company Information
-      </h2>
-
-      {/* Section Selector */}
-      <select
-        value={selectedSection}
-        onChange={handleSectionChange}
-        className="w-full px-3 py-2 bg-slate-900/50 border border-slate-700 rounded-lg 
-                   text-slate-300 mb-6
-                   focus:outline-none focus:border-blue-500/50
-                   transition-colors"
-      >
-        {sections.map((section) => (
-          <option
-            key={section.value}
-            value={section.value}
-            className={section.value === "add_section" ? "text-blue-400" : ""}
-          >
-            {section.label}
-          </option>
-        ))}
-      </select>
-
-      {/* Form Content */}
-      {renderSection()}
-
-      {/* Submit Button */}
-      <button
-        onClick={() => {
-          console.log("Form Data:", { ...formData, customSections });
-          closeModal();
-        }}
-        className="w-full mt-6 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg 
-                   text-blue-400 font-medium hover:bg-blue-500/20 transition-all
-                   focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-      >
-        Submit
-      </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default Try;

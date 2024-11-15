@@ -1,0 +1,19 @@
+<svg
+  width="800px"
+  height="800px"
+  viewBox="0 0 24 24"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+>
+  <!-- Speech bubble outline -->
+  <path
+    d="M4 4 h16 a2 2 0 0 1 2 2 v10 a2 2 0 0 1 -2 2 h-10 l-4 4 v-4 h-2 a2 2 0 0 1 -2 -2 v-10 a2 2 0 0 1 2 -2 z"
+    fill="none"
+    stroke="#60A5FA"
+    stroke-width="1.5"
+  />
+  <!-- Lines representing writing within the prompt bubble -->
+  <line x1="6" y1="8" x2="18" y2="8" stroke="#60A5FA" stroke-width="1.5" />
+  <line x1="6" y1="12" x2="14" y2="12" stroke="#60A5FA" stroke-width="1.5" />
+  <line x1="6" y1="16" x2="12" y2="16" stroke="#60A5FA" stroke-width="1.5" />
+</svg>

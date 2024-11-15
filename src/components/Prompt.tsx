@@ -9,7 +9,7 @@ const Prompt = ({ setShowPromptModal }: PromptProps) => {
   const [prompt, setPrompt] = useState("");
 
   const handleSubmit = async () => {
-    const result = await axios.post("http://localhost:8000/process-input", {
+    const result = await axios.post("http://localhost:8000/interact", {
       message: prompt,
     });
     //  setResponse(result.data.response);
