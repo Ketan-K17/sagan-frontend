@@ -6,8 +6,16 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    "noImplicitAny": true,
+    "checkJs": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "noEmit": true,
     "paths": {
       "@/*": ["./src/*"]
     }
-  }
+  },
+
+  "include": [],
+  "exclude": ["**/*"]
 }

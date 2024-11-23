@@ -1,12 +1,12 @@
 import { useState, FormEvent } from "react";
 import { X } from "lucide-react";
+import { useSagan } from "../context/context";
 
 interface prop {
   closeModal: () => void;
-  setResponseText: React.Dispatch<React.SetStateAction<string>>;
-  setUserPrompt: React.Dispatch<React.SetStateAction<string>>;
 }
-const PromptForm = ({ closeModal, setUserPrompt }: prop) => {
+const PromptForm = ({ closeModal }: prop) => {
+  const { dispatch } = useSagan();
   const [selectedModel, setSelectedModel] = useState("");
   const [selectedRole, setSelectedRole] = useState("");
   const [promptType, setPromptType] = useState("default");
@@ -45,7 +45,12 @@ const PromptForm = ({ closeModal, setUserPrompt }: prop) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setUserPrompt(customPrompt);
+    // setUserPrompt(customPrompt);
+
+    // setIsPrompt(true);
+    dispatch({ type: "SET_USER_PROMPT", payload: customPrompt });
+    dispatch({ type: "SET_IS_PROMPT", payload: true });
+
     closeModal();
   };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Star,
   Copy,
@@ -10,6 +10,9 @@ import {
   ClipboardCopy,
   RefreshCcw,
   ChevronDown,
+  FileStack,
+  CircleUser,
+  Send,
 } from "lucide-react";
 import share from "../assets/share.svg";
 // import review from "../assets/review.svg";
@@ -24,117 +27,55 @@ import PromptForm from "../components/PromptForm";
 import LibraryForm from "../components/LibraryForm";
 import CompanyForm from "../components/CompanyForm";
 import axios from "axios";
-
-const content = {
-  title:
-    "Autonomous Navigation to Near-Earth Asteroids Using Advanced Rocket Engines",
-  sections: [
-    {
-      title: "1. Introduction",
-      content: `Near-Earth asteroids (NEAs) have garnered significant attention in the realm of space exploration due to their potential to unlock new scientific insights and resources. These celestial bodies, which orbit relatively close to Earth, present unique opportunities for exploration and utilization. The significance of NEAs lies not only in their scientific value but also in their potential as stepping stones for deeper space missions. As humanity looks beyond Earth for resources and knowledge, NEAs offer a promising frontier.
-
-The primary objective of this research project is to enhance propulsion technologies and autonomous navigation systems to facilitate missions to NEAs. By advancing these technologies, the project aims to overcome current limitations in space exploration, enabling more efficient and reliable missions. The development of advanced rocket engines and autonomous navigation systems is crucial for the success of such missions, as they ensure precise trajectory management and efficient propulsion.
-
-In the context of current space exploration challenges, this project holds immense importance. Traditional propulsion systems and navigation methods have limitations that hinder long-duration and deep-space missions. By addressing these challenges, the project not only contributes to the advancement of space technology but also opens up new possibilities for exploration and resource utilization. The integration of cutting-edge propulsion and navigation technologies is essential for the future of space exploration, making this project a pivotal step forward.`,
-    },
-    {
-      title: "2. Background and Literature Review",
-      content: `The exploration of propulsion technologies has been a cornerstone of space exploration, with various systems developed over the years. Traditional propulsion systems, such as chemical rockets, have been the workhorses of space missions. However, they come with limitations, including low efficiency and high fuel consumption, which restrict their use in long-duration missions. This project seeks to address these limitations by exploring advanced propulsion technologies that offer improved mass flow rates and efficiency.
-
-Oskar J. Haidn's contributions to advanced rocket engine design have been instrumental in pushing the boundaries of propulsion technology. His work focuses on enhancing the performance and reliability of rocket engines, making them suitable for extended missions. By building on Haidn's research, this project aims to develop propulsion systems that can support missions to NEAs, ensuring efficient and reliable travel.
-
-Autonomous navigation systems are another critical component of space missions. These systems enable spacecraft to navigate and manage their trajectories without human intervention, which is essential for missions to distant celestial bodies like NEAs. Current autonomous navigation systems have been successfully applied in various space missions, but they require further refinement to meet the demands of NEA exploration.
-
-The importance of NEA orbit determination and resource utilization cannot be overstated. Accurate orbit determination is crucial for mission planning and execution, ensuring that spacecraft can reach their targets efficiently. Additionally, NEAs are believed to contain valuable resources, such as water and metals, which could be utilized for future space missions. This project aims to refine orbit determination techniques and explore the potential for resource utilization on NEAs, contributing to the broader goals of space exploration.`,
-    },
-    {
-      title: "3.Innovative Propulsion Technologies",
-      content: `The development of advanced rocket engines is a key focus of this project, with an emphasis on improving mass flow rates and efficiency. Traditional rocket engines, while effective, have limitations that restrict their use in long-duration missions. By exploring innovative propulsion technologies, this project aims to overcome these limitations and enable more efficient and reliable space travel.
-
-One of the primary challenges in rocket design is achieving a balance between performance and reliability. Advanced rocket engines must be capable of delivering high thrust while maintaining safety and reliability over extended periods. This project addresses these challenges by integrating cutting-edge technologies and design principles, ensuring that the engines can support missions to NEAs.
-
-Liquid propulsion advancements play a crucial role in enhancing the reliability and safety of rocket engines. Liquid propellants offer several advantages, including higher efficiency and better control over thrust levels. By incorporating these advancements, the project aims to develop propulsion systems that are not only efficient but also safe and reliable for extended missions.
-
-The integration of advanced propulsion technologies is essential for the success of missions to NEAs. By improving mass flow rates and efficiency, these technologies enable spacecraft to travel longer distances with less fuel, reducing the overall cost and complexity of missions. This project represents a significant step forward in the development of propulsion systems, paving the way for future exploration of NEAs and beyond.`,
-    },
-    {
-      title: "4. Autonomous Navigation Systems",
-      content: `Autonomous navigation systems are a critical component of space missions, enabling spacecraft to navigate and manage their trajectories without human intervention. This project focuses on developing high-precision attitude control systems and state estimation algorithms to ensure accurate trajectory management in space missions.
-
-High-precision attitude control systems are essential for maintaining the correct orientation of spacecraft during missions. These systems use advanced sensors and control algorithms to adjust the spacecraft's orientation, ensuring that it remains on the correct trajectory. By developing high-precision attitude control systems, this project aims to enhance the accuracy and reliability of autonomous navigation systems.
-
-State estimation algorithms play a crucial role in autonomous navigation, providing real-time data on the spacecraft's position and velocity. These algorithms use data from onboard sensors to estimate the spacecraft's state, enabling it to make informed decisions about its trajectory. By refining state estimation algorithms, this project aims to improve the accuracy and reliability of autonomous navigation systems, ensuring that spacecraft can reach their targets efficiently.
-
-Developing autonomous navigation systems for NEAs presents unique challenges, including the need for accurate orbit determination and resource utilization. This project addresses these challenges by integrating advanced technologies and methodologies, ensuring that autonomous navigation systems can support missions to NEAs. By overcoming these challenges, the project contributes to the broader goals of space exploration, enabling more efficient and reliable missions to distant celestial bodies.
-`,
-    },
-    {
-      title: "5.Scientific Goals and Methodologies",
-      content: `The scientific goals of this project are centered around refining NEA orbit determination techniques and exploring resource utilization on NEAs. Accurate orbit determination is crucial for mission planning and execution, ensuring that spacecraft can reach their targets efficiently. This project aims to refine orbit determination techniques, improving the accuracy and reliability of mission planning.
-
-Resource utilization on NEAs is another key focus of this project. NEAs are believed to contain valuable resources, such as water and metals, which could be utilized for future space missions. By exploring the potential for resource utilization on NEAs, this project aims to contribute to the broader goals of space exploration, enabling more sustainable and cost-effective missions.
-
-Comprehensive studies on asteroid dynamics and physical characteristics are essential for understanding the potential of NEAs. These studies provide valuable insights into the composition and behavior of NEAs, informing mission planning and execution. By conducting comprehensive studies on asteroid dynamics and physical characteristics, this project aims to enhance our understanding of NEAs and their potential for exploration and utilization.
-
-The methodologies employed in achieving the scientific goals of this project are centered around advanced technologies and techniques. By integrating cutting-edge technologies and methodologies, this project aims to overcome the challenges of NEA exploration, ensuring that missions are efficient and reliable. The scientific goals and methodologies of this project represent a significant step forward in the exploration and utilization of NEAs, contributing to the broader goals of space exploration.
-`,
-    },
-    {
-      title: "6.Project Development and Timeline",
-      content: `The development of this project is structured around a comprehensive timeline, with key milestones and deliverables outlined to ensure its success. The project timeline is designed to facilitate the efficient and effective development of advanced propulsion technologies and autonomous navigation systems, ensuring that the project meets its objectives.
-
-Key milestones in the project timeline include the development and testing of advanced rocket engines, the refinement of autonomous navigation systems, and the exploration of NEA orbit determination and resource utilization. These milestones are designed to ensure that the project progresses smoothly, with each stage building on the previous one to achieve the overall objectives.
-
-The involvement of stakeholders in the evaluation and funding processes is crucial for the success of the project. By engaging stakeholders in the evaluation and funding processes, the project ensures that it receives the necessary support and resources to achieve its objectives. This collaborative approach is essential for the success of the project, ensuring that it meets the needs and expectations of all stakeholders.
-
-The project development and timeline represent a comprehensive approach to the exploration and utilization of NEAs, ensuring that the project meets its objectives and contributes to the broader goals of space exploration. By outlining a clear and structured development timeline, the project ensures that it progresses smoothly and efficiently, achieving its objectives and contributing to the advancement of space technology.
-`,
-    },
-    {
-      title: "7. Evaluation and Success Metrics",
-      content: `The evaluation and success metrics of this project are centered around measuring technological progress and scientific findings. By establishing clear criteria for evaluation, the project ensures that it meets its objectives and contributes to the broader goals of space exploration.
-
-The criteria for measuring technological progress include the development and testing of advanced rocket engines, the refinement of autonomous navigation systems, and the exploration of NEA orbit determination and resource utilization. These criteria are designed to ensure that the project achieves its objectives and contributes to the advancement of space technology.
-
-The focus on diverse research outputs beyond traditional metrics is essential for the success of the project. By considering a wide range of research outputs, the project ensures that it captures the full scope of its contributions to space exploration. This approach is essential for the success of the project, ensuring that it meets the needs and expectations of all stakeholders.
-
-Strategies for ensuring high-quality standards throughout the project are centered around rigorous testing and evaluation processes. By implementing rigorous testing and evaluation processes, the project ensures that it meets the highest standards of quality and reliability. This approach is essential for the success of the project, ensuring that it achieves its objectives and contributes to the advancement of space technology.`,
-    },
-
-    {
-      title: "8. Conclusion",
-      content: `The significance of this project lies in its potential impact on future space missions. By advancing propulsion technologies and autonomous navigation systems, the project contributes to the broader goals of space exploration, enabling more efficient and reliable missions to NEAs and beyond.
-
-The expected outcomes and contributions of this project are centered around the development of advanced propulsion technologies and autonomous navigation systems, the refinement of NEA orbit determination techniques, and the exploration of resource utilization on NEAs. These outcomes represent a significant step forward in the exploration and utilization of NEAs, contributing to the broader goals of space exploration.
-
-The importance of continued research and innovation in autonomous navigation and propulsion technologies cannot be overstated. By advancing these technologies, the project ensures that space exploration remains at the forefront of scientific and technological progress, enabling new possibilities for exploration and utilization.
-
-In conclusion, this project represents a significant step forward in the exploration and utilization of NEAs, contributing to the broader goals of space exploration. By advancing propulsion technologies and autonomous navigation systems, the project ensures that space exploration remains at the forefront of scientific and technological progress, enabling new possibilities for exploration and utilization.
-`,
-    },
-    // ... Add other sections here
-  ],
-};
-
+import Markdown from "react-markdown";
+import Logo from "../assets/white_logo.svg";
+import { useSagan } from "../context/context";
+import firstResponse from "./firstResponse.json";
+import secoundResponse from "./secoundResponse.json";
+import { InitiateWebsocket } from "../services/websocket";
+const SESSION_ID = 1234;
 const NewHome = () => {
+  const { state, dispatch } = useSagan();
+  // console.log(state?.activeMode, "from state");
+  const [storePrompt, setStorePrompt] = useState("");
+  const [step, setStep] = useState(1);
   const [isDocumentOpen, setIsDocumentOpen] = useState(false);
   const [activeFormat, setActiveFormat] = useState("markdown");
-
+  const [isPrompt, setIsPrompt] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [activeMode, setActiveMode] = useState(false);
   const [responseText, setResponseText] = useState<string>("");
   const [userPrompt, setUserPrompt] = useState(
-    "Our research project aims to determine precise orbital trajectories of asteroids in our solar system. We're developing advanced computational methods and algorithms to improve asteroid tracking and prediction. Our sophisticated system processes astronomical observations from various sources to calculate accurate orbital parameters, accounting for subtle forces like solar radiation pressure and the Yarkovsky effect. Key challenges include developing robust statistical methods, implementing advanced orbit determination algorithms, and creating a comprehensive database. We're combining classical orbital mechanics with modern computational techniques, including machine learning. The project will deliver practical tools for the astronomical community and has significant implications for planetary defense and solar system dynamics understanding."
+    localStorage.getItem("prompt") || ""
+  );
+  const [sectionMode, setSectionMode] = useState(false);
+  const [sectionHeading, setSectionsHeadings] = useState(
+    localStorage.getItem("sections") || []
   );
   const [outputHoveredIndex, setOutputHoveredIndex] = useState<number | null>(
     null
   );
-  const [latexData, setLatexData] = useState(localStorage.getItem("latex"));
+
+  const sectionRefs = useRef({});
+  const [sectionContents, setSectionContents] = useState({});
+
+  const [chatMode, setChatMode] = useState(false);
+  // const [latexData, setLatexData] = useState(localStorage.getItem("latex"));
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   const [files, setFiles] = useState([]);
+
+  const [latexData, setLatexData] = useState(localStorage.getItem("latex"));
+  const [mdData, setMdData] = useState(localStorage.getItem("md"));
+  const [pdfData, setPdfData] = useState(localStorage.getItem("pdf"));
+  const [aiText, setAiText] = useState("");
+
+  // const [allChatData, setAllChatData] = useState<any>([]);
+  const [selectedSectionHeading, setSelectedSectionHeading] = useState(
+    localStorage.getItem("selectedHeading") || ""
+  );
 
   const outputButtons = [
     {
@@ -159,6 +100,53 @@ const NewHome = () => {
       text: "Download",
     },
   ];
+
+  // websocket code
+
+  const webSocketObj = useMemo(() => new InitiateWebsocket(), []);
+  const newStateRef = useRef(state);
+  useEffect(() => {
+    newStateRef.current = state;
+  }, [state]);
+
+  const getState = () => {
+    console.log(newStateRef.current, "new state ref");
+    return newStateRef.current;
+  };
+  const [connectionTokenApi, toggleConnectionTokenApi] = useState(true);
+  // useEffect(() => {
+  //   if (connectionTokenApi) {
+  //     dispatch(getConnectionToken());
+  //   }
+  // }, [connectionTokenApi]);
+  const connectionTokenStoredInStateManagement = "1234";
+  useEffect(() => {
+    if (connectionTokenStoredInStateManagement) {
+      let interval;
+      toggleConnectionTokenApi(false);
+      webSocketObj.initiateConnection(
+        connectionTokenStoredInStateManagement,
+        dispatch,
+        getState
+      );
+      // webSocketObj.send({ userMsg: "great" });
+      webSocketObj.reconnectOnClose(() => {
+        //   console.log("reconnect", new Date()); if you want to check reconnects in console
+        toggleConnectionTokenApi(true);
+      });
+
+      //setting up ping keep-alive check
+      // interval = setInterval(() => {
+      //   if (webSocketObj.checkIfSocketOpen()) {
+      //     webSocketObj.keepAlivePingMessage();
+      //     console.log("remove warning of disconnection to user");
+      //   } else {
+      //     console.log("show warning of disconnection to user");
+      //   }
+      // }, 10000);
+    }
+  }, [connectionTokenStoredInStateManagement]);
+
   const toggleDocument = () => {
     setIsDocumentOpen(!isDocumentOpen);
   };
@@ -189,8 +177,8 @@ const NewHome = () => {
           <PromptForm
             closeModal={() => setActiveModal(null)}
             setResponseText={setResponseText}
-            setActiveMode={setActiveMode}
             setUserPrompt={setUserPrompt}
+            setIsPrompt={setIsPrompt}
           />
         );
       case "Library":
@@ -212,356 +200,1001 @@ const NewHome = () => {
     }
   }
 
+  useEffect(() => {
+    let storedData = localStorage.getItem("first_reponse");
+
+    let newData = {};
+    newData = storedData ? JSON.parse(storedData) : {};
+    // const newData = JSON?.parse(localStorage.getItem("first_reponse") || "");
+    newData = { data: newData };
+
+    // console.log(newData, "newData");
+
+    const latexData = newData?.data?.tex_file;
+
+    // console.log(latexData, "latexdata");
+    if (latexData) {
+      dispatch({ type: "SET_LATEX_DATA", payload: latexData });
+      localStorage.setItem("latex", latexData);
+    }
+    if (state.allChatData.length === 0 && state.chatMode) {
+      const data = newData?.data?.section_headings?.map((heading, index) => ({
+        id: index + 1,
+        section_heading: heading,
+        messages:
+          index === 0
+            ? [
+                {
+                  aiMessage:
+                    newData?.data?.ai_message ||
+                    "Your darft has been generated successfully",
+                  userPrompt: state.userPrompt,
+                },
+              ]
+            : [],
+      }));
+
+      // console.log(data, "data");
+      setSectionsHeadings(newData?.data?.section_headings);
+
+      dispatch({ type: "SET_ALL_CHAT_DATA", payload: data });
+      // setAllChatData(data);
+      setSelectedSectionHeading(newData?.data?.section_headings[0]);
+      // dispatch({
+      //   type: "SET_SELECTED_SECTION_HEADING",
+      //   payload: firstResponse?.section_headings[0],
+      // });
+    }
+  }, []);
+
+  // console.log(state, "state");
+
   const startSagan = async () => {
     setResponseText("");
-    const response = await axios.post("http://127.0.0.1:8000/process-input", {
-      message: userPrompt,
-    });
 
-    console.log(response?.data?.response, "response from backend");
-    const latexResponse = response.data.response;
-    if (typeof latexResponse !== "string") {
-      console.error("Unexpected data format:", latexResponse);
-      // setResponseText("Error: Invalid data format received from server.");
-      return;
+    localStorage.setItem("first_reponse", JSON.stringify(firstResponse));
+
+    // const response = await axios.post(
+    //   "http://127.0.0.1:8000/process-input-first-wrokflow",
+    //   {
+    //     message: userPrompt,
+    //   }
+    // );
+    // const response1 = response?.data;
+
+    // console.log(response1, response, "response1");
+    // localStorage.setItem("first_reponse", JSON.stringify(response));
+    if (firstResponse) {
+      // activate sagan
+      // setChatMode(true);
+      dispatch({ type: "SET_CHAT_MODE", payload: true });
+
+      const data = firstResponse?.section_headings.map((heading, index) => ({
+        id: index + 1,
+        section_heading: heading,
+        messages:
+          index === 0
+            ? [
+                {
+                  aiMessage: firstResponse?.ai_message,
+                  userPrompt: state.userPrompt,
+                },
+              ]
+            : [],
+      }));
+
+      // setAllChatData(data);
+      dispatch({ type: "SET_ALL_CHAT_DATA", payload: data });
+      // setSelectedSectionHeading(response1?.section_headings[0]);
+      dispatch({
+        type: "SET_SELECTED_SECTION_HEADING",
+        payload: firstResponse?.section_headings[0],
+      });
+    }
+    const response = { data: firstResponse };
+    const pdfData = response?.data?.pdf_file;
+    if (pdfData) {
+      dispatch({ type: "SET_PDF_DATA", payload: pdfData });
+      localStorage.setItem("pdf", pdfData);
     }
 
-    const latexContent = extractLatexContent(latexResponse);
-    console.log(latexContent);
+    const mdData = response?.data?.md_file;
+    if (mdData) {
+      dispatch({ type: "SET_MD_DATA", payload: mdData });
+      localStorage.setItem("md", mdData);
+    }
 
+    // console.log(response, "response from backend");
+    // setPdfData(response?.data?.pdf_file);
+    // setMdData(response?.data?.md_file);
+    // setLatexData(response?.data?.tex_file);
+    // setSectionsHeadings(response?.data?.section_headings);
+    // setAiText(response?.data?.ai_message);
+    // localStorage.setItem("latex", response?.data?.tex_file);
+    // localStorage.setItem("md", response?.data?.md_file);
+    // localStorage.setItem("pdf", response?.data?.pdf_file);
+    // localStorage.setItem("sections", response?.data?.section_headings);
+    // const latexResponse = response?.data.response;
+    // if (typeof latexResponse !== "string") {
+    //   console.error("Unexpected data format:", latexResponse);
+    //   // setResponseText("Error: Invalid data format received from server.");
+    //   return;
+    // }
+
+    // const latexContent = extractLatexContent(latexResponse);
+    // console.log(latexContent);
+
+    const latexData = response?.data?.tex_file;
+
+    // console.log(latexData, "latexdata");
+    if (latexData) {
+      dispatch({ type: "SET_LATEX_DATA", payload: latexData });
+      localStorage.setItem("latex", latexData);
+    }
+
+    const sections = response?.data?.section_headings;
+    if (sections) {
+      dispatch({ type: "SET_SECTION_HEADING", payload: sections });
+      localStorage.setItem("sections", sections);
+    }
     // setLatexData("");
-    setLatexData(latexContent);
-    localStorage.setItem("latex", latexContent);
-    // setLatexData(response?.data?.response);
-
-    // const response = await fetch("http://localhost:8000/interact", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ message: userPrompt }),
-    // });
+    // setLatexData(latexContent);
+    // localStorage.setItem("latex", latexContent);
   };
 
-  //   const ChatContainer = () => (
-  //     <div className="  border border-green-600  flex  flex-col h-full">
-  //       {/* Chat messages */}
-  //       <div className="space-y-6">
-  //         {/* User message */}
-  //         <div className="flex gap-3">
-  //           <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-  //             S
-  //           </div>
-  //           <div>
-  //             <div className="text-gray-300">
-  //               write an essay for what is an agent
-  //             </div>
-  //           </div>
-  //         </div>
+  const ChatContainer = () => {
+    const [text, setText] = useState("");
+    const [loader, setLoader] = useState(false);
 
-  //         {/* Assistant message */}
-  //         <div className="bg-[#1a1a1a]  px-4  py-4 rounded-xl">
-  //           <div className="mb-4">
-  //             I'll help you write a comprehensive essay about agents.
-  //           </div>
+    const [aiMsg, setAiMsg] = useState(localStorage.getItem("aimsg"));
 
-  //           {/* Document preview */}
-  //           <div
-  //             className="bg-[#2a2a2a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
-  //             onClick={toggleDocument}
-  //           >
-  //             <div className="text-gray-400">
-  //               <MessageCircle size={20} />
-  //             </div>
-  //             <div>
-  //               <div className="font-medium">
-  //                 Understanding Agents: From Concept to Applications
-  //               </div>
-  //               <div className="text-sm text-gray-400">
-  //                 Click to open document
-  //               </div>
-  //             </div>
-  //           </div>
+    const selectedSectionData = state.allChatData?.find(
+      (i) => i.section_heading === state.selectedSectionHeading
+    );
+    const messagesEndRef = useRef<any>(null);
+    console.log(messagesEndRef, "messagesEndRef");
 
-  //           <div className="text-gray-300">
-  //             I've created a comprehensive essay about agents that covers their
-  //             fundamental concepts, types, applications, and implications. The
-  //             essay is structured to provide both breadth and depth, starting with
-  //             basic definitions and moving through to complex considerations and
-  //             future directions.
-  //           </div>
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
-  //           {/* Action buttons */}
-  //           <div className="flex gap-2 mt-4">
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <Copy size={16} />
-  //               Copy
-  //             </button>
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <MessageCircle size={16} />
-  //               Retry
-  //             </button>
-  //           </div>
-  //         </div>
-  //         <div className="bg-[#1a1a1a]  px-4  py-4 rounded-xl">
-  //           <div className="mb-4">
-  //             I'll help you write a comprehensive essay about agents.
-  //           </div>
+    // useEffect(() => {}, [state?.allChatData?.messages]);
+    // Dependency on `messages` to trigger scrolling on updates
 
-  //           {/* Document preview */}
-  //           <div
-  //             className="bg-[#2a2a2a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
-  //             onClick={toggleDocument}
-  //           >
-  //             <div className="text-gray-400">
-  //               <MessageCircle size={20} />
-  //             </div>
-  //             <div>
-  //               <div className="font-medium">
-  //                 Understanding Agents: From Concept to Applications
-  //               </div>
-  //               <div className="text-sm text-gray-400">
-  //                 Click to open document
-  //               </div>
-  //             </div>
-  //           </div>
+    // console.log({ selectedSectionData });
 
-  //           <div className="text-gray-300">
-  //             I've created a comprehensive essay about agents that covers their
-  //             fundamental concepts, types, applications, and implications. The
-  //             essay is structured to provide both breadth and depth, starting with
-  //             basic definitions and moving through to complex considerations and
-  //             future directions.
-  //           </div>
+    // const [promptsArr, setPromptsArr] = useState([samplePrompt]);
 
-  //           {/* Action buttons */}
-  //           <div className="flex gap-2 mt-4">
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <Copy size={16} />
-  //               Copy
-  //             </button>
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <MessageCircle size={16} />
-  //               Retry
-  //             </button>
-  //           </div>
-  //         </div>
-  //         <div className="bg-[#1a1a1a]  px-4  py-4 rounded-xl">
-  //           <div className="mb-4">
-  //             I'll help you write a comprehensive essay about agents.
-  //           </div>
+    // const startWorkFlowTwo = async () => {
+    //   const response = await axios.post("http://127.0.0.1:8000/process-input", {
+    //     message: "hey sagan could you please modify my section 3",
+    //     section_number: 3,
+    //   });
 
-  //           {/* Document preview */}
-  //           <div
-  //             className="bg-[#2a2a2a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
-  //             onClick={toggleDocument}
-  //           >
-  //             <div className="text-gray-400">
-  //               <MessageCircle size={20} />
-  //             </div>
-  //             <div>
-  //               <div className="font-medium">
-  //                 Understanding Agents: From Concept to Applications
-  //               </div>
-  //               <div className="text-sm text-gray-400">
-  //                 Click to open document
-  //               </div>
-  //             </div>
-  //           </div>
+    //   if (response?.data?.succes) {
+    //     setSectionMode(true);
+    //     setAiMsg(response?.data?.ai_message);
+    //     setPdfData(response?.data?.pdf_file);
+    //     setMdData(response?.data?.md_file);
+    //     setLatexData(response?.data?.tex_file);
 
-  //           <div className="text-gray-300">
-  //             I've created a comprehensive essay about agents that covers their
-  //             fundamental concepts, types, applications, and implications. The
-  //             essay is structured to provide both breadth and depth, starting with
-  //             basic definitions and moving through to complex considerations and
-  //             future directions.
-  //           </div>
+    //     localStorage.setItem("latex", response?.data?.tex_file);
+    //     localStorage.setItem("md", response?.data?.md_file);
+    //     localStorage.setItem("pdf", response?.data?.pdf_file);
+    //     localStorage.setItem("aimsg", response?.data?.ai_message);
+    //   }
+    // };
 
-  //           {/* Action buttons */}
-  //           <div className="flex gap-2 mt-4">
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <Copy size={16} />
-  //               Copy
-  //             </button>
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <MessageCircle size={16} />
-  //               Retry
-  //             </button>
-  //           </div>
-  //         </div>
-  //         <div className="bg-[#1a1a1a]  px-4  py-4 rounded-xl">
-  //           <div className="mb-4">
-  //             I'll help you write a comprehensive essay about agents.
-  //           </div>
+    // function fakeApiCall() {
+    //   return new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       const fakeData = {
+    //         message: "This is a fake response.",
+    //       };
 
-  //           {/* Document preview */}
-  //           <div
-  //             className="bg-[#2a2a2a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
-  //             onClick={toggleDocument}
-  //           >
-  //             <div className="text-gray-400">
-  //               <MessageCircle size={20} />
-  //             </div>
-  //             <div>
-  //               <div className="font-medium">
-  //                 Understanding Agents: From Concept to Applications
-  //               </div>
-  //               <div className="text-sm text-gray-400">
-  //                 Click to open document
-  //               </div>
-  //             </div>
-  //           </div>
+    //       resolve(fakeData);
+    //     }, 0);
+    //   });
+    // }
 
-  //           <div className="text-gray-300">
-  //             I've created a comprehensive essay about agents that covers their
-  //             fundamental concepts, types, applications, and implications. The
-  //             essay is structured to provide both breadth and depth, starting with
-  //             basic definitions and moving through to complex considerations and
-  //             future directions.
-  //           </div>
+    // console.log(step, "step");
+    // console.log(storePrompt, "storeprompt");
+    // const fakeLlmChat = () => {
+    //   const selectedIdx = state?.allChatData?.findIndex(
+    //     (i) => i.section_heading === state.selectedSectionHeading
+    //   );
 
-  //           {/* Action buttons */}
-  //           <div className="flex gap-2 mt-4">
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <Copy size={16} />
-  //               Copy
-  //             </button>
-  //             <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-  //               <MessageCircle size={16} />
-  //               Retry
-  //             </button>
-  //           </div>
-  //         </div>
-  //       </div>
+    //   if (step === 1) {
+    //     setStorePrompt(text);
 
-  //       {/* Input area */}
-  //       <div className="mt-6">
-  //         <div className="bg-[#1a1a1a] rounded-lg p-4">
-  //           <div className="flex items-center gap-2 mb-4">
-  //             <textarea
-  //               className="flex-1 bg-transparent resize-none outline-none"
-  //               placeholder="Reply to Claude..."
-  //               rows={1}
-  //             />
-  //           </div>
-  //           <div className="flex justify-between items-center">
-  //             <div className="flex gap-2">
-  //               <button className="text-gray-400">
-  //                 <Image size={20} />
-  //               </button>
-  //             </div>
-  //             <div className="flex items-center gap-2 text-gray-400 text-sm">
-  //               <span>Claude 3.5 Sonnet (New)</span>
-  //               <span>2</span>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
+    //     if (selectedIdx > -1) {
+    //       // const formattedData = [
+    //       //   ...state.allChatData.slice(0, selectedIdx),
+    //       //   {
+    //       //     ...state?.allChatData[selectedIdx],
+    //       //     llmChat: [
+    //       //       ...state.allChatData[selectedIdx].llmChat,
+    //       //       {
+    //       //         received: "Would you like to modify or add queries?(yes/no) ",
+    //       //       },
+    //       //     ],
+    //       //   },
+    //       //   ...state.allChatData.slice(selectedIdx + 1),
+    //       // ];
 
-  const ChatContainer = () => (
-    <div className="h-full flex flex-col  pt-4   relative ">
-      {/* Select dropdown - Fixed at top */}
-      <div className="flex-shrink-0 px-1 mb-4 relative z-10   ">
-        <div className="relative inline-block">
-          <select className="appearance-none bg-[#2a2a2a]/50 backdrop-blur-sm text-gray-300 px-4 py-2 pr-10 rounded-lg border border-gray-700/50 cursor-pointer hover:bg-[#2a2a2a]/70 transition-colors outline-none focus:ring-2 focus:ring-blue-500/50">
-            <option>Section 1</option>
-            <option>Section 2</option>
-            <option>Section 3</option>
-            <option>Section 4</option>
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
-        </div>
-      </div>
-      {/* Chat header - Fixed at top */}
+    //       dispatch({
+    //         type: "SET_ALL_CHAT_DATA",
+    //         payload: {
+    //           type: "llm",
+    //           data: {
+    //             received: "Would you like to modify or add queries?(yes/no) ",
+    //           },
+    //         },
+    //       });
+    //       setStep(2);
+    //     }
+    //   }
 
-      {/* Chat messages - Scrollable */}
+    //   if (step === 2) {
+    //     if (selectedIdx > -1) {
+    //       let tempObj;
+    //       if (text === "no") {
+    //         tempObj = [
+    //           { sent: text },
+    //           { received: "Would you like to save the text changes ?(yes/no)" },
+    //         ];
+    //         dispatch({
+    //           type: "SET_ALL_CHAT_DATA",
+    //           payload: {
+    //             type: "llm",
+    //             data: {
+    //               sent: text,
+    //             },
+    //           },
+    //         });
+
+    //         dispatch({
+    //           type: "SET_ALL_CHAT_DATA",
+    //           payload: {
+    //             type: "llm",
+    //             data: {
+    //               received: "Would you like to save the text changes ?(yes/no)",
+    //             },
+    //           },
+    //         });
+    //       } else if (text === "yes") {
+    //         tempObj = [{ sent: text }, { received: "Enter your query: " }];
+    //       }
+    //       const formattedData = [
+    //         ...state.allChatData.slice(0, selectedIdx),
+    //         {
+    //           ...state?.allChatData[selectedIdx],
+    //           llmChat: [...state.allChatData[selectedIdx].llmChat, ...tempObj],
+    //         },
+    //         ...state.allChatData.slice(selectedIdx + 1),
+    //       ];
+    //       dispatch({ type: "SET_ALL_CHAT_DATA", payload: formattedData });
+    //     }
+    //     if (text === "no") {
+    //       // sendPromptHandler();
+    //       setStep(4);
+    //     } else if (text === "yes") {
+    //       setStep(3);
+    //     }
+
+    //     return;
+    //   }
+
+    //   if (step === 3) {
+    //     const formattedData = [
+    //       ...state.allChatData.slice(0, selectedIdx),
+    //       {
+    //         ...state?.allChatData[selectedIdx],
+    //         llmChat: [
+    //           ...state.allChatData[selectedIdx].llmChat,
+    //           { sent: text },
+    //           { received: "Would you like to modify or add queries?(yes/no) " },
+    //         ],
+    //       },
+    //       ...state.allChatData.slice(selectedIdx + 1),
+    //     ];
+    //     dispatch({ type: "SET_ALL_CHAT_DATA", payload: formattedData });
+    //     setStep(2);
+    //     return;
+    //   }
+
+    //   if (step === 4) {
+    //     if (selectedIdx > -1) {
+    //       const formattedData = [
+    //         ...state.allChatData.slice(0, selectedIdx),
+    //         {
+    //           ...state?.allChatData[selectedIdx],
+    //           llmChat: [
+    //             ...state.allChatData[selectedIdx].llmChat,
+    //             { sent: text },
+    //           ],
+    //         },
+    //         ...state.allChatData.slice(selectedIdx + 1),
+    //       ];
+    //       dispatch({ type: "SET_ALL_CHAT_DATA", payload: formattedData });
+    //     }
+
+    //     sendPromptHandler();
+
+    //     return;
+    //   }
+
+    //   setText("");
+    // };
+    let keyName;
+    if (
+      selectedSectionData?.messages?.length > 0 &&
+      selectedSectionData?.messages[selectedSectionData?.messages.length - 1]
+    ) {
+      keyName = Object.keys(
+        selectedSectionData?.messages[selectedSectionData?.messages?.length - 1]
+      )[0];
+    } else {
+      keyName = "";
+    }
+
+    useEffect(() => {
+      scrollToBottom();
+    }, [keyName]);
+    useEffect(() => {
+      setText("");
+    }, [state.counter]);
+
+    const sendPromptHandler = async () => {
+      if (state?.isApiRunning) {
+        const lastMsgOfSelectedSection =
+          selectedSectionData?.messages[
+            selectedSectionData?.messages.length - 1
+          ] || {};
+        console.log({ lastMsgOfSelectedSection, selectedSectionData });
+        if (lastMsgOfSelectedSection?.hasOwnProperty("received")) {
+          webSocketObj.send({
+            key: lastMsgOfSelectedSection?.received?.type,
+            value: text,
+          });
+          dispatch({
+            type: "SET_ALL_CHAT_DATA",
+            payload: {
+              type: "llm",
+              data: {
+                sent: {
+                  data: text,
+                },
+              },
+            },
+          });
+        }
+        scrollToBottom();
+      } else {
+        dispatch({
+          type: "SET_ALL_CHAT_DATA",
+          payload: {
+            type: "llm",
+            data: {
+              sent: {
+                data: text,
+              },
+            },
+          },
+        });
+        dispatch({
+          type: "SET_IS_API_RUNNING",
+          payload: true,
+        });
+        dispatch({
+          type: "SET_USER_QUERY_COPY",
+          payload: text,
+        });
+
+        setLoader(true);
+
+        // const res = await fakeApiCall();
+
+        const response = await axios.post(
+          "http://127.0.0.1:8002/process-input",
+          {
+            message: text,
+            section_number: selectedSectionData?.id,
+            // message: "hey sagan could you please modify my section 3",
+            // section_number: 3,
+          }
+        );
+        // const response = { data: secoundResponse };
+        // const response2 = secoundResponse;
+        const response2 = response?.data;
+        dispatch({
+          type: "SET_ALL_CHAT_DATA",
+          payload: {
+            type: "llm",
+            data: { ...response2, userPrompt: getState().userQueryCopy },
+          },
+        });
+
+        dispatch({ type: "SET_USER_QUERY_COPY", payload: "" });
+        dispatch({ type: "SET_IS_API_RUNNING", payload: false });
+        if (response?.data) {
+          const pdfData = response?.data?.pdf_file;
+          if (pdfData) {
+            dispatch({ type: "SET_PDF_DATA", payload: pdfData });
+            localStorage.setItem("pdf", pdfData);
+          }
+
+          const mdData = response?.data?.md_file;
+          if (mdData) {
+            dispatch({ type: "SET_MD_DATA", payload: mdData });
+            localStorage.setItem("md", mdData);
+          }
+
+          const latexData = response?.data?.tex_file;
+          if (latexData) {
+            dispatch({ type: "SET_LATEX_DATA", payload: latexData });
+            localStorage.setItem("latex", latexData);
+          }
+          // setSectionMode(true);
+          // setAiMsg(response?.data?.ai_message);
+          // setPdfData(response?.data?.pdf_file);
+          // setMdData(response?.data?.md_file);
+          // setLatexData(response?.data?.tex_file);
+
+          // localStorage.setItem("latex", response?.data?.tex_file);
+          // localStorage.setItem("md", response?.data?.md_file);
+          // localStorage.setItem("pdf", response?.data?.pdf_file);
+          // localStorage.setItem("aimsg", response?.data?.ai_message);
+        }
+        // console.log(response2);
+        const selectedIdx = state?.allChatData?.findIndex(
+          (i) => i.section_heading === state.selectedSectionHeading
+        );
+        if (selectedIdx > -1) {
+          const formattedData = [
+            ...state?.allChatData?.slice(0, selectedIdx),
+            {
+              ...state?.allChatData[selectedIdx],
+              messages: [
+                ...state.allChatData[selectedIdx].messages,
+                { aiMessage: response2?.ai_message, userPrompt: storePrompt },
+                // { aiMessage: response2?.ai_message, userPrompt: text },
+              ],
+            },
+            ...state.allChatData?.slice(selectedIdx + 1),
+          ];
+          // dispatch({ type: "SET_ALL_CHAT_DATA", payload: formattedData });
+          // setAllChatData(formattedData);
+        }
+        setStep(1);
+        setLoader(false);
+        // setText("");
+
+        // dispatch({ type: "SET_USER_QUERY", payload: "" });
+        setStorePrompt("");
+        setTimeout(() => {
+          scrollToBottom();
+        }, 1000);
+      }
+    };
+
+    // console.log({
+    //   allChatData,
+    //   selectedSectionHeading,
+    //   setSelectedSectionHeading,
+    //   setAllChatData,
+    // });
+
+    // console.log(state.files, "files");
+
+    const testClickHandler = () => {
+      webSocketObj.send({ data: "this is test data" });
+      const selectedIdx = state?.allChatData?.findIndex(
+        (i) => i.section_heading === state.selectedSectionHeading
+      );
+
+      if (selectedIdx > -1) {
+        const formattedData = [
+          ...state.allChatData.slice(0, selectedIdx),
+          {
+            ...state?.allChatData[selectedIdx],
+            llmChat: [
+              ...state.allChatData[selectedIdx].llmChat,
+              { sent: "this is test data" },
+            ],
+          },
+          ...state.allChatData.slice(selectedIdx + 1),
+        ];
+
+        dispatch({
+          type: "SET_ALL_CHAT_DATA",
+          payload: formattedData,
+        });
+      }
+      // dispatch({ type: "SET_LLMCHAT", payload: { sent: "this is test data" } });
+    };
+
+    console.log(state, "whole context state");
+
+    return (
       <div
-        //   className="flex-1 overflow-y-auto"
-        className="absolute inset-0 bottom-[88px] overflow-y-auto   mb-6  scrollbar-hide pt-20 "
+        // className="bg-slate-50 min-h-screen"
+        className="h-full flex flex-col  pt-4   relative  "
       >
-        <div className="space-y-6">
-          {/* User message */}
-          <div className="flex gap-3">
-            <div className="w-8 h-8 bg-[#4495FF] rounded-full flex items-center justify-center">
-              S
-            </div>
-            <div>
-              <div className="text-gray-300">
-                write an essay for what is an agent
-              </div>
-            </div>
-          </div>
-
-          {/* Assistant message */}
-          <div className="bg-[#2a2a2a] p-4  rounded-xl">
-            <div className="mb-4">
-              I'll help you write a comprehensive essay about agents.
-            </div>
-
-            {/* Document preview */}
-            <div
-              className="bg-[#1a1a1a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
-              onClick={toggleDocument}
+        <div className="flex-shrink-0 px-1 mb-4 relative z-10">
+          <div className="relative inline-block">
+            <select
+              className="appearance-none bg-[#2a2a2a]/50 backdrop-blur-sm text-gray-300 px-4 py-2 pr-10 rounded-lg border border-gray-700/50 cursor-pointer hover:bg-[#2a2a2a]/70 transition-colors outline-none focus:ring-2 focus:ring-blue-500/50"
+              value={state.selectedSectionHeading}
+              onChange={(e) => {
+                // setSelectedSectionHeading(e.target?.value);
+                dispatch({
+                  type: "SET_SELECTED_SECTION_HEADING",
+                  payload: e.target?.value,
+                });
+              }}
             >
-              <div className="text-gray-400">
-                <MessageCircle size={20} />
-              </div>
-              <div>
-                <div className="font-medium">
-                  Understanding Agents: From Concept to Applications
+              {state.allChatData?.map((obj: any) => (
+                <option key={obj?.id} value={obj?.section_heading}>
+                  {obj?.section_heading}
+                </option>
+              ))}
+            </select>
+
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
+          </div>
+        </div>
+        {/* <div className="h-full h-screen flex flex-col  pt-4   relative "> */}
+        {/* Select dropdown - Fixed at top */}
+        {/* <div className="flex-shrink-0 px-1 mb-4 relative z-10   ">
+          {!sectionMode ? (
+            <div>
+              <button onClick={startWorkFlowTwo}>Section Mode</button>
+            </div>
+          ) : (
+            <div className="relative inline-block">
+              <select className="appearance-none bg-[#2a2a2a]/50 backdrop-blur-sm text-gray-300 px-4 py-2 pr-10 rounded-lg border border-gray-700/50 cursor-pointer hover:bg-[#2a2a2a]/70 transition-colors outline-none focus:ring-2 focus:ring-blue-500/50">
+                <option>Section 1</option>
+                <option>Section 2</option>
+                <option>Section 3</option>
+                <option>Section 4</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
+            </div>
+          )}
+        </div> */}
+        {/* Chat header - Fixed at top */}
+        {/* Chat messages - Scrollable */}
+        {/* <div
+          className="absolute inset-0 bottom-[88px] overflow-y-auto   mb-6  scrollbar-hide pt-20 "
+          id="chat-container"
+        >
+          {promptsArr?.map((obj: any, idx: number) => (
+            <div key={idx} className="mb-6 scrollbar-hide pt-10 chat-box">
+              <div className="space-y-6">
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 bg-[#4495FF] rounded-full flex items-center justify-center">
+                    S
+                  </div>
+                  <div>
+                    <div className="text-gray-300">{obj?.text}</div>
+                  </div>
                 </div>
-                <div className="text-sm text-gray-400">
-                  Click to open document
+
+                <div className="bg-[#2a2a2a] p-4  rounded-xl">
+                  <div className="mb-4">{obj?.assistantMessage}</div>
+
+                  <div
+                    className="bg-[#1a1a1a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
+                    onClick={toggleDocument}
+                  >
+                    <div className="text-gray-400">
+                      <MessageCircle size={20} />
+                    </div>
+                    <div>
+                      <div className="font-medium">{obj?.docTitle}</div>
+                      <div className="text-sm text-gray-400">
+                        Click to open document
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-gray-300">
+                    <div>
+                      <h2>Response:</h2>
+                      <pre>{obj?.responseText}</pre>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 mt-4 action-btns">
+                    <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                      <Copy size={16} />
+                      Copy
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                      <MessageCircle size={16} />
+                      Retry
+                    </button>
+                    <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                      <ClipboardCopy size={16} />
+                      Publish
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div> */}
 
-            <div className="text-gray-300">
-              <div>
-                <h2>Response:</h2>
-                <pre>{responseText}</pre>
+        <div
+          // className="flex flex-col gap-4 grow overflow-y-auto"
+          className="absolute inset-0 bottom-[88px] overflow-y-auto   mb-6  scrollbar-hide pt-20 "
+          id="chat-container"
+        >
+          {/* {selectedSectionData?.llmChat?.map((item, index) => (
+            <div>
+              {item.received ? (
+                <div className="flex flex-col  items-baseline">
+                  <p className="bg-[#2a2a2a]  p-2 rounded-xl">
+                    {item.received}
+                  </p>
+                  <img src={Sagan} className="w-8 h-8 mt-2 object-contain" />
+                </div>
+              ) : (
+                <div className=" flex items-end flex-col ">
+                  <p className="bg-[#2a2a2a]  p-2 rounded-xl">{item.sent}</p>
+                  <div className="w-8 h-8 bg-[#4495FF] rounded-full flex items-center justify-center mt-2">
+                    <CircleUser size={20} />
+                  </div>
+                </div>
+              )}
+            </div>
+          ))} */}
+          {selectedSectionData?.messages?.map((obj: any, idx: number) => {
+            if (obj.hasOwnProperty("sent") || obj.hasOwnProperty("received")) {
+              return (
+                <div>
+                  {obj?.received?.data ? (
+                    <div className="flex flex-col  items-baseline">
+                      <p className="bg-[#2a2a2a]  p-2 rounded-xl">
+                        {obj?.received?.data}
+                      </p>
+                      <img
+                        src={Sagan}
+                        className="w-8 h-8 mt-2 object-contain"
+                      />
+                    </div>
+                  ) : (
+                    <div className=" flex items-end flex-col ">
+                      <p className="bg-[#2a2a2a]  p-2 rounded-xl">
+                        {obj?.sent?.data}
+                      </p>
+                      <div className="w-8 h-8 bg-[#4495FF] rounded-full flex items-center justify-center mt-2">
+                        <CircleUser size={20} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            } else {
+              return (
+                <div
+                  key={idx}
+                  //   className="flex-1 overflow-y-auto"
+                  className="mb-6 scrollbar-hide pt-10 chat-box"
+                >
+                  <div className="space-y-6">
+                    {/* User message */}
+                    <div className="flex flex-col  items-end gap-3">
+                      <div>
+                        <div className="bg-[#2a2a2a]  p-2 rounded-xl">
+                          {obj?.userPrompt}
+                        </div>
+                      </div>
+                      <div className="w-8 h-8 bg-[#4495FF] rounded-full flex items-center justify-center">
+                        <CircleUser size={20} />
+                      </div>
+                    </div>
+
+                    {/* Assistant message */}
+                    <div>
+                      <div className="bg-[#2a2a2a] p-4  rounded-xl ">
+                        <div className="mb-4">{obj?.ai_message}</div>
+
+                        {/* Document preview */}
+                        <div
+                          className="bg-[#1a1a1a] rounded-lg p-3 mb-4 flex items-center gap-3 cursor-pointer hover:bg-gray-700 transition-colors"
+                          onClick={toggleDocument}
+                        >
+                          <div className="text-gray-400">
+                            <FileStack size={20} />
+                          </div>
+                          <div>
+                            {/* <div className="font-medium">
+                              {obj?.modified_section_text}
+                            </div> */}
+                            <div className="text-sm text-gray-400">
+                              Click to open response document
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* <div className="text-gray-300">
+                    <div>
+                      <h2>Response:</h2>
+                      <pre></pre>
+                    </div>
+                  </div> */}
+
+                        {/* Action buttons */}
+                        <div className="flex gap-2 mt-4 action-btns">
+                          <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                            <Copy size={16} />
+                            Copy
+                          </button>
+                          <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                            <MessageCircle size={16} />
+                            Retry
+                          </button>
+                          <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                            <ClipboardCopy size={16} />
+                            Publish
+                          </button>
+                        </div>
+                      </div>
+                      <img
+                        src={Sagan}
+                        className="w-8 h-8 mt-2 object-contain"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          })}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* keeping this div intentionally for now in order to apply some css to
+        chat-container */}
+        {/* Input area - Fixed at bottom */}
+        {/* <div className="absolute bottom-0 left-0 right-0 ">
+          <Star size={20} className={`${loader ? "pulse-logo" : ""}`} />
+          <div className="pt-4">
+            <div className="bg-[#2a2a2a] rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <textarea
+                  className="flex-1 bg-transparent resize-none outline-none"
+                  placeholder="Reply to Sagan..."
+                  rows={2}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (["enter", "Enter", "submit", "go"].includes(e.key)) {
+                      e.preventDefault();
+                      sendPromptHandler();
+                    }
+                  }}
+                />
+                <button onClick={sendPromptHandler}>Send</button>
               </div>
             </div>
+          </div>
+        </div> */}
 
-            {/* Action buttons */}
-            <div className="flex gap-2 mt-4">
-              <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-                <Copy size={16} />
-                Copy
-              </button>
-              <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-                <MessageCircle size={16} />
-                Retry
-              </button>
-              <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
-                <ClipboardCopy size={16} />
-                Publish
-              </button>
+        <div className="absolute bottom-0 left-0 right-0 ">
+          {/* <Star size={20} className={`${loader ? "pulse-logo" : ""}`} /> */}
+          <div className="pt-4">
+            <div className="bg-[#2a2a2a] rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <textarea
+                  className="flex-1 bg-transparent resize-none outline-none"
+                  placeholder="Reply to Sagan..."
+                  rows={2}
+                  value={text}
+                  onChange={(e) => {
+                    // dispatch({
+                    //   type: "SET_USER_QUERY",
+                    //   payload: e.target.value,
+                    // });
+                    setText(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (["enter", "Enter", "submit", "go"].includes(e.key)) {
+                      e.preventDefault();
+                      // fakeLlmChat();
+                      sendPromptHandler();
+                    }
+                  }}
+                />
+                <button onClick={sendPromptHandler} className="mb-2">
+                  <Send size={26} />
+                </button>
+                {/* <button onClick={testClickHandler}>test</button> */}
+              </div>
             </div>
           </div>
         </div>
+        {/* </div> */}
       </div>
+    );
+  };
 
-      {/* Input area - Fixed at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 ">
-        <div className="pt-4  ">
-          <div className="bg-[#2a2a2a] rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <textarea
-                className="flex-1 bg-transparent resize-none outline-none"
-                placeholder="Reply to Sagan..."
-                rows={2}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  // Initialize refs and parse content into sections
 
-  console.log(files, "files");
+  localStorage.setItem("selectedHeading", selectedSectionHeading);
+  useEffect(() => {
+    if (state.allChatData && latexData) {
+      // Initialize refs
+      state.allChatData.forEach((section) => {
+        sectionRefs.current[section.section_heading] = React.createRef();
+      });
+
+      // Parse latex content into sections
+      const sections = {};
+      let currentSection = "";
+      let currentContent = [];
+
+      // Split the latex data into lines
+      const lines = latexData.split("\n");
+
+      for (let line of lines) {
+        // Check if line contains a section heading
+        const sectionMatch = line.match(/\\section{([^}]+)}/);
+
+        if (sectionMatch) {
+          // If we were building a previous section, save it
+          if (currentSection) {
+            sections[currentSection] = currentContent.join("\n");
+          }
+
+          // Start new section
+          currentSection = sectionMatch[1];
+          currentContent = [];
+        } else if (currentSection) {
+          // Add line to current section
+          currentContent.push(line);
+        }
+      }
+
+      // Save the last section
+      if (currentSection) {
+        sections[currentSection] = currentContent.join("\n");
+      }
+
+      setSectionContents(sections);
+    }
+  }, [state.allChatData, latexData, mdData]);
+  // const scrollToSection = (sectionHeading) => {
+  //   // console.log("here", sectionHeading);
+  //   const ref = sectionRefs.current[sectionHeading];
+  //   if (ref && ref.current) {
+  //     ref.current.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "start",
+  //     });
+  //   }
+  // };
+
+  // const components = {
+  //   h1: ({ children, ...props }) => {
+  //     // Find the corresponding section in allChatData
+  //     const section = allChatData?.find((s) => s.section_heading === children);
+  //     console.log(section, "section");
+  //     if (section) {
+  //       return (
+  //         <h1
+  //           ref={sectionRefs.current[section.section_heading]}
+  //           className="text-2xl font-bold mb-6 pb-2 border-b"
+  //           {...props}
+  //         >
+  //           {children}
+  //         </h1>
+  //       );
+  //     }
+  //     return (
+  //       <h1 className="text-2xl font-bold mb-6 pb-2 border-b" {...props}>
+  //         {children}
+  //       </h1>
+  //     );
+  //   },
+  // };
+  useEffect(() => {
+    if (state.allChatData) {
+      const newRefs = {};
+      state.allChatData.forEach((section) => {
+        newRefs[section.section_heading] = React.createRef();
+      });
+      sectionRefs.current = newRefs;
+
+      // Debug: Log the sections we're tracking
+      // setDebug((prev) => ({
+      //   ...prev,
+      //   sections: allChatData.map((s) => s.section_heading),
+      // }));
+    }
+  }, [state.allChatData]);
+
+  const processedMdData = React.useMemo(() => {
+    let content = mdData;
+
+    // Add anchor divs before each section heading
+    state.allChatData?.forEach((section) => {
+      const headingText = `# ${section.section_heading}`;
+      const anchorDiv = `\n<div id="section-${section.id}" ref={sectionRefs.current['${section.section_heading}']}></div>\n`;
+      content = content?.replace(headingText, `${anchorDiv}${headingText}`);
+    });
+
+    return content;
+  }, [mdData, state.allChatData]);
+
+  // console.log(userPrompt, "userpromt");
+  // console.log(chatMode, "chatMode");
+  // console.log(state.userPrompt, state.isPrompt, state.activeMode);
+
+  function scrollToSection(sectionHeading) {
+    const section = document.getElementById(sectionHeading);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  function renderLatexWithIds(latexData) {
+    // Add IDs to LaTeX sections
+    // return latexData.replace(
+    //   /\\section\{(.*?)\}/g,
+    //   (match, sectionTitle) =>
+    //     `<div id="${sectionTitle}"><h2>${sectionTitle}</h2></div>`
+    // );
+
+    return latexData?.replace(
+      /\\section\{(.*?)\}/g,
+      (match, sectionTitle) => `<div id="${sectionTitle}">${match}</div>` // Wrap LaTeX section with a div
+    );
+  }
+
+  function addTagsAboveMatches(markdown, stringsToMatch) {
+    // Split the markdown content by newline
+    const lines = markdown.split("\n");
+    const processedLines = lines.map((line) => {
+      // Check if the line contains any of the strings to match
+      for (const str of stringsToMatch) {
+        if (line.includes(str)) {
+          // Generate an ID based on the matched string
+          return `<a className="opacity-0" id='${str.replace(
+            /\s+/g,
+            "-"
+          )}'></a>\n${line}`;
+        }
+      }
+      return line; // Return the line unchanged if no match is found
+    }); // Join the processed lines back into a single string
+    return processedLines.join("\n");
+  }
+
+  // const processedMarkdown = addTagsAboveMatches(state.mdData, sectionHeading);
+
+  function addIdsToMarkdownHeadings(markdownData) {
+    return markdownData?.replace(
+      /^(#{1,6})\s*(.+)$/gm, // Match Markdown headings (e.g., # Heading, ## Subheading)
+      (match, hashes, heading) =>
+        `${hashes} ${heading}\n<div id="${heading
+          ?.trim()
+          .replace(/\s+/g, "-")}"></div>`
+    );
+  }
+
+  function scrollToMdSection(sectionHeading) {
+    const sectionId = sectionHeading?.trim()?.replace(/\s+/g, "-");
+    const section = document?.getElementById(sectionId);
+    if (section) {
+      section?.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  const processedMarkdown = addIdsToMarkdownHeadings(state.mdData);
 
   return (
     <div
@@ -570,7 +1203,7 @@ const NewHome = () => {
     >
       {/* Sidebar */}
       <div
-        className={`absolute left-0 top-0 h-full bg-zinc-800 rounded-xl z-[999] transition-all duration-300 ease-in-out
+        className={`absolute left-0 top-0 h-full bg-zinc-800 rounded-xl z-[999] transition-all duration-300 ease-in-out  
              inset-0 bg-black/40 backdrop-blur-xl`}
         // className={`absolute left-0 top-0 h-full bg-slate-800
         //     rounded-xl z-[999] transition-all duration-300 ease-in-out`}
@@ -581,7 +1214,7 @@ const NewHome = () => {
           overflow: "hidden",
         }}
       >
-        <div className="w-64  flex flex-col  h-full">
+        <div className="w-64  flex flex-col  h-full  ">
           <div className="p-4 flex   justify-start">
             {/* <img src={Logo} className="w-8 h-8 object-contain" /> */}
             <h1
@@ -592,30 +1225,16 @@ const NewHome = () => {
             </h1>
           </div>
           <hr className="border-gray-800" />
-          <div className="flex  flex-col h-full">
-            <div className="flex-1 overflow-y-auto">
+          <div className="flex  flex-col h-full ">
+            <div className="flex-1   overflow-y-scroll  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-[#2a2a2a] hover:scrollbar-thumb-gray-500  ">
               <div className="p-4">
                 <div className="mb-6">
                   <h2 className="text-sm font-semibold text-white mb-2">
                     LITERATURE FILES
                   </h2>
-                  {/* <div
-                    className=""
-                    // className="space-y-2 flex flex-col "
-                  >
-                    {files.map((file, index) => (
-                      <p
-                        key={index}
 
-                        // className=" gap-2 text-sm text-gray-300 hover:text-white cursor-pointer"
-                      >
-                        <FileText className="h-4 w-4" />
-                        <p className="border border-red-600">{file}</p>
-                      </p>
-                    ))}
-                  </div> */}
                   <div className="space-y-2 flex flex-col">
-                    {files?.map((file, index) => (
+                    {state?.files?.map((file, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <FileText className="h-4 w-4 mb-1" />
                         <p className="text-sm">{file}</p>
@@ -628,7 +1247,24 @@ const NewHome = () => {
                     SECTION OUTLINED
                   </h2>
                   <div className="space-y-2">
-                    <div className="text-sm text-gray-300 hover:text-white cursor-pointer">
+                    {state.allChatData?.map((obj: any) => {
+                      return (
+                        <p
+                          key={obj?.id}
+                          // value={obj?.section_heading}
+                          onClick={() => {
+                            scrollToSection(obj.section_heading);
+                            scrollToMdSection(obj.section_heading);
+                          }}
+                          // onClick={() => }
+                          className="pl-2 cursor-pointer"
+                        >
+                          <span className="px-1"> {obj.id}</span>
+                          <span>{obj?.section_heading}</span>
+                        </p>
+                      );
+                    })}
+                    {/* <div className="text-sm text-gray-300 hover:text-white cursor-pointer">
                       - Section 1
                     </div>
                     <div className="text-sm text-gray-300 hover:text-white cursor-pointer">
@@ -636,7 +1272,7 @@ const NewHome = () => {
                     </div>
                     <div className="text-sm text-gray-300 hover:text-white cursor-pointer">
                       - Section 3
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -655,16 +1291,17 @@ const NewHome = () => {
           isDocumentOpen ? "w-1/2" : "w-full"
         } transition-all duration-300  relative  `}
       >
-        <div className=" basis-[20%] h-full ">
+        <div className=" basis-[10%] h-full ">
           <DockMenu setActiveModal={setActiveModal} />
         </div>
-        <div className="basis-[80%] h-full">
+        <div className="basis-[90%] h-full  ">
           {activeModal && (
             <div className="absolute z-[99] flex items-center  justify-center top-[100px] w-full  ">
               {renderModal()}
             </div>
           )}
-          {!activeMode && (
+          {/* {!isPrompt ? ( */}
+          {!state.activeMode && (
             <div
               className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 
@@ -672,25 +1309,57 @@ const NewHome = () => {
             >
               {" "}
               <button
-                className="flex justify-center items-center"
-                onClick={() => {
-                  setActiveMode(true);
-                  startSagan();
+                className="flex flex-col space-y-4 justify-center items-center"
+                style={{
+                  opacity: state.isPrompt ? "1" : "0.5",
                 }}
+                onClick={() => {
+                  // console.log("disabled");
+                  startSagan();
+                  dispatch({ type: "SET_ACTIVE_MODE", payload: true });
+                  // setActiveMode(true);
+                }}
+                disabled={!state.isPrompt}
               >
-                <NeonGradientCard
-                  borderRadius={9999}
-                  borderSize={1}
-                  className="!p-0 [&>div]:!p-0 [&_.relative]:!p-0"
-                >
-                  <img src={Sagan} className="w-12 h-12 object-cover " />
-                </NeonGradientCard>
+                <img src={Sagan} className="w-12 h-12 object-cover " />
+                {state.isPrompt && <p>click here</p>}
               </button>
             </div>
           )}
+
+          {/* ) : ( */}
+          {!state.chatMode && state.activeMode && (
+            <div
+              className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+
+              //   className="flex justify-center  items-start border border-red-600 h-full"
+            >
+              <div className="flex flex-col items-center  space-y-5">
+                <p
+                  className="uppercase text-transparent bg-clip-text
+                  bg-gradient-to-r from-blue-400 to-purple-400   text-xl font-bold"
+                >
+                  sagan activated.......
+                </p>
+                <button
+                  className="flex justify-center items-center"
+                  onClick={() => {}}
+                >
+                  <NeonGradientCard
+                    borderRadius={9999}
+                    borderSize={1}
+                    className="!p-0 [&>div]:!p-0 [&_.relative]:!p-0"
+                  >
+                    <img src={Sagan} className="w-12 h-12 object-cover " />
+                  </NeonGradientCard>
+                </button>
+              </div>
+            </div>
+          )}
+          {/* )} */}
           {/* Center container with fixed width */}
-          {activeMode && (
-            <div className="h-full max-w-3xl mx-auto px-4   overflow-hidden">
+          {state.chatMode && (
+            <div className="h-full max-w-3xl mx-auto px-4     overflow-hidden">
               <ChatContainer />
             </div>
           )}
@@ -773,6 +1442,7 @@ const NewHome = () => {
                 //   className="bg-blue-400  text-white flex
                 //   items-center space-x-3 px-3 py-1 rounded-full"
                 className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full transition-colors duration-200 flex items-center space-x-2 shadow-sm"
+                onClick={() => setActiveFormat("pdf")}
               >
                 {/* <RefreshCcw size={16} /> */}
                 <span className="font-medium"> Compile</span>
@@ -792,37 +1462,96 @@ const NewHome = () => {
             >
               {activeFormat === "markdown" ? (
                 <div className="p-8">
-                  <div className=" mx-auto space-y-8  ">
-                    <h1 className="text-2xl font-semibold mb-12  text-white">
-                      {content.title}
-                    </h1>
+                  <div className="mx-auto space-y-8">
+                    <pre
+                      className="font-mono text-sm whitespace-pre-wrap"
+                      dangerouslySetInnerHTML={{ __html: processedMarkdown }}
+                    />
+                    {/* <Markdown>{processedMarkdown}</Markdown> */}
+                    {/* <Markdown>{state.mdData}</Markdown> */}
 
-                    {content.sections.map((section, index) => (
-                      <section key={index} className="space-y-4  ">
-                        <h2 className="text-xl font-semibold  text-white">
-                          {section.title}
-                        </h2>
-                        {section.content
-                          .split("\n\n")
-                          .map((paragraph, pIndex) => (
-                            <p
-                              key={pIndex}
-                              className="leading-relaxed text-gray-300"
-                            >
-                              {paragraph}
-                            </p>
-                          ))}
-                      </section>
-                    ))}
+                    {/* <Markdown>
+                      {` # Table of Contents 
+                      1. [Introduction](#introduction) 
+                      2.  [Installation](#installation) 
+                      3. [Usage](#usage)
+                     ## Introduction
+                    This is the introduction section.
+
+                    ## Installation
+                    This section covers how to install the package.
+
+                    ## Usage
+                    This section explains how to use the package.`}
+                    </Markdown> */}
+
+                    {/* <Markdown
+                      options={{
+                        overrides: components,
+                        wrapper: React.Fragment,
+                      }}
+                    >
+                      {mdData}
+                    </Markdown> */}
+
+                    {/* <Markdown
+                      options={{
+                        overrides: {
+                          div: {
+                            component: ({ id, ref, ...props }) => {
+                              if (id?.startsWith("section-")) {
+                                return <div id={id} ref={ref} {...props} />;
+                              }
+                              return <div {...props} />;
+                            },
+                          },
+                        },
+                      }}
+                    >
+                      {processedMdData}
+                    </Markdown> */}
                   </div>
                 </div>
-              ) : (
+              ) : activeFormat === "latex" ? (
                 <div className="p-8">
-                  <pre className="font-mono text-sm whitespace-pre-wrap">
-                    {latexData}
-                  </pre>
+                  {/* <pre className="font-mono text-sm whitespace-pre-wrap">
+                    {state.latexData}
+                  </pre> */}
+                  <pre
+                    className="font-mono text-sm whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{
+                      __html: renderLatexWithIds(state.latexData),
+                    }}
+                  />
+
+                  {/* {allChatData?.map((obj) => (
+                    <div
+                      key={obj.id}
+                      ref={sectionRefs.current[obj.section_heading]}
+                      className="mb-12"
+                    >
+                      <h2
+                        className="text-2xl font-bold mb-6 pb-2 "
+                        id={obj.section_heading}
+                      >
+                        {obj.section_heading}
+                      </h2>
+                      <div className="font-mono text-sm whitespace-pre-wrap text-white leading-relaxed">
+                        {sectionContents[obj.section_heading] ||
+                          "Section content not found"}
+                      </div>
+                    </div>
+                  ))} */}
                 </div>
-              )}
+              ) : activeFormat === "pdf" ? (
+                <iframe
+                  src={`data:application/pdf;base64,${state.pdfData}`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: "0" }}
+                  title="PDF Viewer"
+                ></iframe>
+              ) : null}
             </div>
           </div>
 
