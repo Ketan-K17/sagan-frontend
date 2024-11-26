@@ -22,6 +22,7 @@ interface AppState {
   allChatData: ChatData[];
   userQuery: string;
   userQueryCopy: string;
+  fileStructure: any;
 }
 
 type AppAction =
@@ -38,7 +39,8 @@ type AppAction =
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ALL_CHAT_DATA"; payload: ChatData[] }
   | { type: "SET_USER_QUERY"; payload: string }
-  | { type: "SET_USER_QUERY_COPY"; payload: string };
+  | { type: "SET_USER_QUERY_COPY"; payload: string }
+  | { type: "SET_FILE_STRUCTURE"; payload: any };
 
 interface AppContextType {
   state: AppState;
@@ -149,6 +151,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     userQueryCopy: "",
     isApiRunning: false,
     counter: 0,
+    fileStructure: [],
   });
 
   return (

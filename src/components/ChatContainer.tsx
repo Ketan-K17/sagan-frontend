@@ -22,7 +22,6 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
   );
 
   const messagesEndRef = useRef<any>(null);
-  console.log(messagesEndRef, "messagesEndRef");
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,7 +52,6 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
         selectedSectionData?.messages[
           selectedSectionData?.messages.length - 1
         ] || {};
-      console.log({ lastMsgOfSelectedSection, selectedSectionData });
       if (lastMsgOfSelectedSection?.hasOwnProperty("received")) {
         webSocketObj.send({
           key: lastMsgOfSelectedSection?.received?.type,
@@ -113,25 +111,25 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
       dispatch({ type: "SET_USER_QUERY_COPY", payload: "" });
       dispatch({ type: "SET_IS_API_RUNNING", payload: false });
       setText("");
-      if (response?.data) {
-        const pdfData = response?.data?.pdf_file;
-        if (pdfData) {
-          dispatch({ type: "SET_PDF_DATA", payload: pdfData });
-          localStorage.setItem("pdf", pdfData);
-        }
+      // if (response?.data) {
+      //   const pdfData = response?.data?.pdf_file;
+      //   if (pdfData) {
+      //     dispatch({ type: "SET_PDF_DATA", payload: pdfData });
+      //     localStorage.setItem("pdf", pdfData);
+      //   }
 
-        const mdData = response?.data?.md_file;
-        if (mdData) {
-          dispatch({ type: "SET_MD_DATA", payload: mdData });
-          localStorage.setItem("md", mdData);
-        }
+      //   const mdData = response?.data?.md_file;
+      //   if (mdData) {
+      //     dispatch({ type: "SET_MD_DATA", payload: mdData });
+      //     localStorage.setItem("md", mdData);
+      //   }
 
-        const latexData = response?.data?.tex_file;
-        if (latexData) {
-          dispatch({ type: "SET_LATEX_DATA", payload: latexData });
-          localStorage.setItem("latex", latexData);
-        }
-      }
+      //   const latexData = response?.data?.tex_file;
+      //   if (latexData) {
+      //     dispatch({ type: "SET_LATEX_DATA", payload: latexData });
+      //     localStorage.setItem("latex", latexData);
+      //   }
+      // }
 
       setLoader(false);
 
@@ -141,11 +139,38 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
     }
   };
 
-  console.log(state, "whole context state");
-
   const lastMsgOfSelectedSection =
     selectedSectionData?.messages[selectedSectionData?.messages.length - 1] ||
     {};
+
+  const publishHandler = async () => {
+    const response = await axios.post("http://127.0.0.1:8002/publish", {
+      modified_text: lastMsgOfSelectedSection?.modified_section_text,
+      section_number: selectedSectionData?.id,
+    });
+
+    console.log(response, "response from publish api");
+
+    if (response?.data) {
+      const pdfData = response?.data?.pdf_file;
+      if (pdfData) {
+        dispatch({ type: "SET_PDF_DATA", payload: pdfData });
+        localStorage.setItem("pdf", pdfData);
+      }
+
+      const mdData = response?.data?.md_file;
+      if (mdData) {
+        dispatch({ type: "SET_MD_DATA", payload: mdData });
+        localStorage.setItem("md", mdData);
+      }
+
+      const latexData = response?.data?.tex_file;
+      if (latexData) {
+        dispatch({ type: "SET_LATEX_DATA", payload: latexData });
+        localStorage.setItem("latex", latexData);
+      }
+    }
+  };
 
   return (
     <div className="h-full flex flex-col  pt-4   relative  ">
@@ -182,13 +207,6 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
               selectedSectionData?.messages.length - 1
             ] || {};
 
-          console.log(lastMsgOfSelectedSection, "lastMsgOfSelectedSection");
-          console.log(
-            ["question1", "question2", "question4"].includes(
-              lastMsgOfSelectedSection?.received?.type
-            ),
-            "types"
-          );
           if (obj.hasOwnProperty("sent") || obj.hasOwnProperty("received")) {
             return (
               <div>
@@ -232,8 +250,10 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
 
                   {/* Assistant message */}
                   <div>
+                    <div className="mb-4">{obj?.ai_message}</div>
+
                     <div className="bg-[#2a2a2a] p-4  rounded-xl ">
-                      <div className="mb-4">{obj?.ai_message}</div>
+                      <div className="mb-4">{obj?.modified_section_text}</div>
 
                       {/* Document preview */}
                       <div
@@ -260,13 +280,16 @@ const ChatContainer = ({ webSocketObj, getState, toggleDocument }: any) => {
                           <MessageCircle size={16} />
                           Retry
                         </button>
-                        <button className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm">
+                        <button
+                          className="flex items-center gap-2 px-3 py-1 rounded border border-gray-700 text-gray-400 text-sm"
+                          onClick={publishHandler}
+                        >
                           <ClipboardCopy size={16} />
                           Publish
                         </button>
                       </div>
                     </div>
-                    <img src={Sagan} className="w-8 h-8 mt-2 object-contain" />
+                    <img src={Sagan} className="w-6 h-6 mt-2 object-contain" />
                   </div>
                 </div>
               </div>
