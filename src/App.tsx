@@ -3,13 +3,15 @@ import "./App.css";
 // import Try from "./pages/Try";
 // import NewHome from "./pages/New";
 import Segan from "./pages/Sagan";
+import NewSagan from "./pages/NewSagan";
 function App() {
   return (
     <div className="bg-black">
       {/* <Home /> */}
       {/* <Try /> */}
       {/* <NewHome /> */}
-      <Segan />
+      {/* <Segan /> */}
+      <NewSagan />
     </div>
   );
 }

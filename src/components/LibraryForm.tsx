@@ -210,7 +210,10 @@ const LibraryForm = ({ closeModal }: prop) => {
   ) => {
     const files = event.target.files;
     const fileNames = Array.from(files).map((file) => file.name);
-
+    dispatch({
+      type: "ADD_FILE_NAMES_TO_FOLDER",
+      payload: { folderName: section, fileNames: fileNames },
+    });
     // Dispatch file names to context
     dispatch({
       type: "ADD_FILES",

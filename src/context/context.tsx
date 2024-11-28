@@ -22,8 +22,13 @@ interface AppState {
   allChatData: ChatData[];
   userQuery: string;
   userQueryCopy: string;
-  fileStructure: any;
+  fileStructure: FileStructureFolder[];
 }
+
+type FileStructureFolder = {
+  folderName: string;
+  files: string[]; // Array of file names
+};
 
 type AppAction =
   | { type: "SET_ACTIVE_MODE"; payload: boolean | string }
@@ -40,7 +45,11 @@ type AppAction =
   | { type: "SET_ALL_CHAT_DATA"; payload: ChatData[] }
   | { type: "SET_USER_QUERY"; payload: string }
   | { type: "SET_USER_QUERY_COPY"; payload: string }
-  | { type: "SET_FILE_STRUCTURE"; payload: any };
+  | { type: "SET_FILE_STRUCTURE"; payload: FileStructureFolder[] }
+  | {
+      type: "ADD_FILE_NAMES_TO_FOLDER";
+      payload: { folderName: string; fileNames: string[] };
+    };
 
 interface AppContextType {
   state: AppState;
@@ -119,6 +128,33 @@ const reducer = (state: any, action: any) => {
     case "INC_COUNTER":
       return { ...state, counter: state.counter + 1 };
 
+    case "SET_FILE_STRUCTURE":
+      return { ...state, fileStructure: action.payload };
+
+    case "ADD_FILE_NAMES_TO_FOLDER": {
+      const { folderName, fileNames } = action.payload;
+      const updatedStructure = [...state.fileStructure];
+
+      // Find folder or create a new one
+      const folderIndex = updatedStructure.findIndex(
+        (folder) => folder.folderName === folderName
+      );
+      if (folderIndex !== -1) {
+        // Folder exists, append file names
+        updatedStructure[folderIndex].files = [
+          ...updatedStructure[folderIndex].files,
+          ...fileNames,
+        ];
+      } else {
+        // Add new folder with file names
+        updatedStructure.push({ folderName, files: fileNames });
+      }
+
+      localStorage.setItem("fileStructure", JSON.stringify(updatedStructure));
+
+      return { ...state, fileStructure: updatedStructure };
+    }
+
     default:
       return state;
   }
@@ -151,7 +187,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     userQueryCopy: "",
     isApiRunning: false,
     counter: 0,
-    fileStructure: [],
+    fileStructure: JSON.parse(localStorage.getItem("fileStructure") || "[]"),
   });
 
   return (

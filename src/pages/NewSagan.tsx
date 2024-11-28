@@ -19,9 +19,11 @@ import {
   Folder,
   ChevronRight,
   Copyright,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import share from "../assets/share.svg";
-import ChatContainer from "../components/ChatContainer";
+import NewChatContainer from "../components/NewChatContainer";
 import Sagan from "../assets/sagan-svg.svg";
 import { NeonGradientCard } from "../components/ui/neon-gradient-card";
 import DockMenu from "../components/DockMenu";
@@ -39,7 +41,7 @@ import secoundResponse from "./secoundResponse.json";
 import { InitiateWebsocket } from "../services/websocket";
 import md from "../assets/md.svg";
 const SESSION_ID = 1234;
-const Segan = () => {
+const NewSagan = () => {
   const { state, dispatch } = useSagan();
   const [isOpenSection, setIsOpenSection] = useState(false);
   const [isOpenFiles, setIsOpenFiles] = useState(false);
@@ -194,6 +196,116 @@ const Segan = () => {
     }
   };
 
+  // CHAT CONTAINER CODE STARTS HERE
+
+  const [text, setText] = useState("");
+  const [loader, setLoader] = useState(false);
+
+  const selectedSectionData = state.allChatData?.find(
+    (i) => i.section_heading === state.selectedSectionHeading
+  );
+
+  const messagesEndRef = useRef<any>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const sendPromptHandler = async (booleanResp: any) => {
+    if (state?.isApiRunning) {
+      const lastMsgOfSelectedSection =
+        selectedSectionData?.messages[
+          selectedSectionData?.messages.length - 1
+        ] || {};
+      if (lastMsgOfSelectedSection?.hasOwnProperty("received")) {
+        webSocketObj.send({
+          key: lastMsgOfSelectedSection?.received?.type,
+          value: booleanResp || text,
+        });
+        dispatch({
+          type: "SET_ALL_CHAT_DATA",
+          payload: {
+            type: "llm",
+            data: {
+              sent: {
+                data: booleanResp || text,
+              },
+            },
+          },
+        });
+      }
+      setText("");
+      scrollToBottom();
+    } else {
+      dispatch({
+        type: "SET_ALL_CHAT_DATA",
+        payload: {
+          type: "llm",
+          data: {
+            sent: {
+              data: text,
+            },
+          },
+        },
+      });
+      dispatch({
+        type: "SET_IS_API_RUNNING",
+        payload: true,
+      });
+      dispatch({
+        type: "SET_USER_QUERY_COPY",
+        payload: text,
+      });
+
+      setLoader(true);
+
+      const response = await axios.post("http://127.0.0.1:8002/process-input", {
+        message: text,
+        section_number: selectedSectionData?.id,
+      });
+
+      const response2 = response?.data;
+      dispatch({
+        type: "SET_ALL_CHAT_DATA",
+        payload: {
+          type: "llm",
+          data: { ...response2, userPrompt: getState().userQueryCopy },
+        },
+      });
+
+      dispatch({ type: "SET_USER_QUERY_COPY", payload: "" });
+      dispatch({ type: "SET_IS_API_RUNNING", payload: false });
+      setText("");
+      // if (response?.data) {
+      //   const pdfData = response?.data?.pdf_file;
+      //   if (pdfData) {
+      //     dispatch({ type: "SET_PDF_DATA", payload: pdfData });
+      //     localStorage.setItem("pdf", pdfData);
+      //   }
+
+      //   const mdData = response?.data?.md_file;
+      //   if (mdData) {
+      //     dispatch({ type: "SET_MD_DATA", payload: mdData });
+      //     localStorage.setItem("md", mdData);
+      //   }
+
+      //   const latexData = response?.data?.tex_file;
+      //   if (latexData) {
+      //     dispatch({ type: "SET_LATEX_DATA", payload: latexData });
+      //     localStorage.setItem("latex", latexData);
+      //   }
+      // }
+
+      setLoader(false);
+
+      setTimeout(() => {
+        scrollToBottom();
+      }, 1000);
+    }
+  };
+
+  // CHAT CONTAINER CODE ENDS HERE
+
   function extractLatexContent(response: string) {
     const endDocumentIndex = response?.indexOf("\\end{document}");
     if (endDocumentIndex !== -1) {
@@ -251,9 +363,9 @@ const Segan = () => {
       }
     );
 
-    console.log(responses.data, "response data");
+    // console.log(responses.data, "response data");
     const firstResponse = responses?.data;
-    console.log(firstResponse, "firstResponse");
+    // console.log(firstResponse, "firstResponse");
     localStorage.setItem("first_reponse", JSON.stringify(firstResponse));
 
     if (firstResponse) {
@@ -409,9 +521,9 @@ const Segan = () => {
 
   const processedMarkdown = addIdsToMarkdownHeadings(state.mdData);
 
-  const downloadPdf = async () => {
-    console.log(state.pdfData, "pdf data");
-  };
+  // const downloadPdf = async () => {
+  //   console.log(state.pdfData, "pdf data");
+  // };
 
   function base64ToBlob(base64, mime) {
     const byteCharacters = atob(base64);
@@ -446,7 +558,7 @@ const Segan = () => {
     URL.revokeObjectURL(blobURL);
   }
 
-  console.log(state.fileStructure, "file structure");
+  // console.log(state.fileStructure, "file structure");
 
   const toggleFolder = (folderName) => {
     setExpandedFolders((prev) => ({
@@ -454,6 +566,22 @@ const Segan = () => {
       [folderName]: !prev[folderName],
     }));
   };
+  const messagesTopRef = useRef(null); // Ref for the top of the page
+  // const messagesEndRef = useRef(null); // Ref for the bottom of the page
+  const [currPosition, setCurrPosition] = useState("top");
+
+  const scrollToTop = () => {
+    setCurrPosition("bottom");
+    messagesTopRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToBottomN = () => {
+    setCurrPosition("top");
+    console.log("bottom");
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  console.log(currPosition, "position");
 
   return (
     <div className="min-h-screen  h-full bg-[#1a1a1a] text-gray-100">
@@ -471,7 +599,7 @@ const Segan = () => {
         <div className="w-64  flex flex-col  h-full ">
           <div className="p-4 flex   justify-start">
             <h1
-              className="text-transparent bg-clip-text
+              className="text-transparent bg-clip-text font-montserrat
                   bg-gradient-to-r from-blue-400 to-purple-400   text-2xl font-bold"
             >
               SAGAN
@@ -486,10 +614,13 @@ const Segan = () => {
               <div className="p-4 flex flex-col ">
                 <div className="  basis-[30%] mb-6">
                   <h2
-                    className="text-sm font-semibold text-white mb-2  flex items-center cursor-pointer justify-between"
+                    className="text-md  text-white mb-2  flex items-center cursor-pointer justify-between"
                     onClick={() => setIsOpenFiles(!isOpenFiles)}
                   >
-                    <span> LITERATURE FILES</span>
+                    <span className="font-montserrat text-md">
+                      {" "}
+                      LITERATURE FILES
+                    </span>
                     {isOpenFiles ? (
                       <ChevronUp className="h-5 w-5" />
                     ) : (
@@ -521,7 +652,9 @@ const Segan = () => {
                             <ChevronRight className="h-4 w-4 text-gray-400" />
                           )}
                           <Folder className="h-4 w-4 text-blue-400" />
-                          <span className="text-sm">{folder.folderName}</span>
+                          <span className="text-sm  font-montserrat">
+                            {folder.folderName}
+                          </span>
                         </div>
 
                         {expandedFolders[folder.folderName] && (
@@ -532,7 +665,9 @@ const Segan = () => {
                                 className="flex items-center space-x-2 text-gray-300 hover:bg-gray-700 p-2 rounded-md cursor-pointer"
                               >
                                 <FileText className="h-4 w-4 text-gray-400" />
-                                <span className="text-sm">{file}</span>
+                                <span className="text-sm font-montserrat">
+                                  {file}
+                                </span>
                               </div>
                             ))}
                           </div>
@@ -542,10 +677,12 @@ const Segan = () => {
                 </div>
                 <div className="  basis-[60%] h-full mb-6 overflow-hidden">
                   <h2
-                    className="text-sm font-semibold text-white mb-2 flex items-center cursor-pointer justify-between"
+                    className="text-md  text-white mb-2 flex items-center cursor-pointer justify-between"
                     onClick={() => setIsOpenSection(!isOpenSection)}
                   >
-                    <span>SECTION OUTLINED</span>
+                    <span className="font-montserrat  text-md">
+                      SECTION OUTLINED
+                    </span>
                     {isOpenSection ? (
                       <ChevronUp className="h-5 w-5" />
                     ) : (
@@ -564,8 +701,11 @@ const Segan = () => {
                             }}
                             className="pl-2 cursor-pointer "
                           >
-                            <span className=""> {obj.id}</span>
-                            <span className="text-sm px-2">
+                            <span className="font-montserrat text-sm">
+                              {" "}
+                              {obj.id}
+                            </span>
+                            <span className="text-sm px-2  font-montserrat">
                               {obj?.section_heading}
                             </span>
                           </p>
@@ -601,7 +741,7 @@ const Segan = () => {
               </span>
             </h1> */}
             <h1
-              className="uppercase flex items-end "
+              className="uppercase flex items-end font-montserrat "
               style={{ letterSpacing: "0.1em" }}
             >
               <span className="text-2xl font-bold  text-white">
@@ -614,11 +754,11 @@ const Segan = () => {
                 </span>
                 der
               </span>
-              <span className="text-sm font-semibold   text-white  ml-1">
+              <span className="text-sm font-semibold   text-white mb-1 ml-1">
                 space
               </span>
             </h1>
-            <p className="flex items-center gap-2 text-sm">
+            <p className="flex items-center gap-2 text-sm  font-montserrat">
               {" "}
               <span>
                 {" "}
@@ -637,74 +777,96 @@ const Segan = () => {
       ></div>
       <div
         className={`h-screen  flex flex-col justify-between ${
-          isDocumentOpen ? "w-1/2" : "w-full"
-        } transition-all duration-300  relative  `}
+          isDocumentOpen ? "w-1/2" : "w-full "
+        } transition-all duration-300  relative `}
       >
-        <div className=" basis-[10%] h-full ">
-          <DockMenu setActiveModal={setActiveModal} />
-        </div>
-        <div className="basis-[90%] h-full  ">
-          {/* <DockMenu setActiveModal={setActiveModal} /> */}
-          {activeModal && (
-            <div className="absolute z-[99] flex items-center  justify-center top-[100px] w-full  ">
-              {renderModal()}
-            </div>
-          )}
-          {!state.activeMode && (
-            <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              {" "}
-              <button
-                className="flex flex-col space-y-4 justify-center items-center"
-                style={{
-                  opacity: state.isPrompt ? "1" : "0.5",
-                }}
-                onClick={() => {
-                  startSagan();
-                  dispatch({ type: "SET_ACTIVE_MODE", payload: true });
-                }}
-                disabled={!state.isPrompt}
-              >
-                <img src={Sagan} className="w-12 h-12 object-cover " />
-                {state.isPrompt && <p>click here</p>}
-              </button>
-            </div>
-          )}
+        <div className="h-[calc(100vh-112px)] overflow-auto scrollbar-hide">
+          <div ref={messagesTopRef} />
 
-          {!state.chatMode && state.activeMode && (
-            <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="flex flex-col items-center  space-y-5">
-                <p
-                  className="uppercase text-transparent bg-clip-text
-                  bg-gradient-to-r from-blue-400 to-purple-400   text-xl font-bold"
-                >
-                  sagan activated.......
-                </p>
+          <div className="">
+            <DockMenu setActiveModal={setActiveModal} />
+          </div>
+
+          <div className="">
+            {/* <DockMenu setActiveModal={setActiveModal} /> */}
+            {activeModal && (
+              <div className="absolute z-[99] flex items-center  justify-center top-[100px] w-full  ">
+                {renderModal()}
+              </div>
+            )}
+            {!state.activeMode && (
+              <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                {" "}
                 <button
-                  className="flex justify-center items-center"
-                  onClick={() => {}}
+                  className="flex flex-col space-y-4 justify-center items-center"
+                  style={{
+                    opacity: state.isPrompt ? "1" : "0.5",
+                  }}
+                  onClick={() => {
+                    startSagan();
+                    dispatch({ type: "SET_ACTIVE_MODE", payload: true });
+                  }}
+                  disabled={!state.isPrompt}
                 >
-                  <NeonGradientCard
-                    borderRadius={9999}
-                    borderSize={1}
-                    className="!p-0 [&>div]:!p-0 [&_.relative]:!p-0"
-                  >
-                    <img src={Sagan} className="w-12 h-12 object-cover " />
-                  </NeonGradientCard>
+                  <img src={Sagan} className="w-12 h-12 object-cover " />
+                  {state.isPrompt && (
+                    <p className="text-sm font-montserrat">click here</p>
+                  )}
                 </button>
               </div>
-            </div>
-          )}
+            )}
 
-          {state.chatMode && (
-            <div className="h-full max-w-3xl mx-auto px-4     overflow-hidden">
-              <ChatContainer
-                webSocketObj={webSocketObj}
-                getState={getState}
-                toggleDocument={toggleDocument}
-              />
-            </div>
-          )}
+            {!state.chatMode && state.activeMode && (
+              <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="flex flex-col items-center  space-y-5">
+                  <p
+                    className="uppercase text-transparent bg-clip-text
+                  bg-gradient-to-r from-blue-400 to-purple-400   text-sm font-montserrat font-bold"
+                  >
+                    sagan activated.......
+                  </p>
+                  <button
+                    className="flex justify-center items-center"
+                    onClick={() => {}}
+                  >
+                    <NeonGradientCard
+                      borderRadius={9999}
+                      borderSize={1}
+                      className="!p-0 [&>div]:!p-0 [&_.relative]:!p-0"
+                    >
+                      <img src={Sagan} className="w-12 h-12 object-cover " />
+                    </NeonGradientCard>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {state.chatMode && (
+              <div className="h-full max-w-3xl mx-auto px-4     overflow-hidden">
+                <NewChatContainer
+                  webSocketObj={webSocketObj}
+                  getState={getState}
+                  toggleDocument={toggleDocument}
+                  text={text}
+                  setText={setText}
+                  scrollToBottom={scrollToBottom}
+                  selectedSectionData={selectedSectionData}
+                  setLoader={setLoader}
+                  messagesEndRef={messagesEndRef}
+                  sendPromptHandler={sendPromptHandler}
+                />
+              </div>
+            )}
+          </div>
         </div>
+        <InputChatBox
+          text={text}
+          setText={setText}
+          sendPromptHandler={sendPromptHandler}
+          scrollToTop={scrollToTop}
+          scrollToBottomN={scrollToBottomN}
+          currPosition={currPosition}
+        />
       </div>
 
       {isDocumentOpen && (
@@ -738,7 +900,7 @@ const Segan = () => {
                   }`}
                 >
                   <DiamondMinus size={16} />
-                  <span className="text-sm">Markdown</span>
+                  <span className="text-sm font-montserrat">Markdown</span>
                 </label>
 
                 <label
@@ -750,7 +912,7 @@ const Segan = () => {
                   }`}
                 >
                   <BookMarked size={16} />
-                  <span className="text-sm">LaTeX</span>
+                  <span className="text-sm font-montserrat">LaTeX</span>
                 </label>
               </div>
               <button
@@ -758,7 +920,7 @@ const Segan = () => {
                 onClick={() => setActiveFormat("pdf")}
               >
                 <FileText size={16} />
-                <span className="text-sm"> Compile</span>
+                <span className="text-sm  font-montserrat"> Compile</span>
               </button>
             </div>
           </div>
@@ -770,7 +932,7 @@ const Segan = () => {
                 <div className="p-8">
                   <div className="mx-auto space-y-8">
                     <pre
-                      className="font-mono text-sm whitespace-pre-wrap"
+                      className="font-montserrat text-sm whitespace-pre-wrap"
                       dangerouslySetInnerHTML={{ __html: processedMarkdown }}
                     />
                   </div>
@@ -778,7 +940,7 @@ const Segan = () => {
               ) : activeFormat === "latex" ? (
                 <div className="p-8">
                   <pre
-                    className="font-mono text-sm whitespace-pre-wrap"
+                    className="font-montserrat text-sm whitespace-pre-wrap"
                     dangerouslySetInnerHTML={{
                       __html: renderLatexWithIds(state.latexData),
                     }}
@@ -789,7 +951,7 @@ const Segan = () => {
                   src={`data:application/pdf;base64,${state.pdfData}`}
                   width="100%"
                   height="100%"
-                  style={{ border: "0" }}
+                  style={{ border: "0", fontFamily: "font-montserrat" }}
                   title="PDF Viewer"
                 ></iframe>
               ) : null}
@@ -836,4 +998,61 @@ const Segan = () => {
   );
 };
 
-export default Segan;
+export default NewSagan;
+
+const InputChatBox = ({
+  text,
+  setText,
+  sendPromptHandler,
+
+  scrollToTop,
+  scrollToBottomN,
+  currPosition,
+}: any) => {
+  return (
+    <div className="absolute bottom-0 left-0 right-0 px-4 max-w-3xl mx-auto">
+      {/* <Star size={20} className={`${loader ? "pulse-logo" : ""}`} /> */}
+      {/* <div ref={messagesEndRefN} /> */}
+      <button
+        className="bg-blue-400 p-2 rounded-full  absolute right-4 top-[-50px]  "
+        // onClick={handleClick}
+      >
+        {currPosition === "top" ? (
+          <ArrowUp size={16} onClick={scrollToTop} />
+        ) : (
+          <ArrowDown size={16} onClick={scrollToBottomN} />
+        )}
+      </button>
+      <div className="pt-4">
+        <div className="bg-[#2a2a2a] rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <textarea
+              className="flex-1 bg-transparent resize-none outline-none  text-sm font-montserrat"
+              placeholder="Reply to Sagan..."
+              rows={2}
+              value={text}
+              onChange={(e) => {
+                // dispatch({
+                //   type: "SET_USER_QUERY",
+                //   payload: e.target.value,
+                // });
+                setText(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (["enter", "Enter", "submit", "go"].includes(e.key)) {
+                  e.preventDefault();
+                  // fakeLlmChat();
+                  sendPromptHandler();
+                }
+              }}
+            />
+            <button onClick={sendPromptHandler} className="mb-2">
+              <Send size={26} />
+            </button>
+            {/* <button onClick={testClickHandler}>test</button> */}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

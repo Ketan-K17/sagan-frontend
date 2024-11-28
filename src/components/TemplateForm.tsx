@@ -22,6 +22,11 @@ const TemplateForm = ({ closeModal }: prop) => {
       type: "ADD_FILES",
       payload: fileNames,
     });
+
+    dispatch({
+      type: "ADD_FILE_NAMES_TO_FOLDER",
+      payload: { folderName: "Proposal Files", fileNames: fileNames },
+    });
     console.log(fileNames, "fileNames");
 
     if (files) {
@@ -43,6 +48,11 @@ const TemplateForm = ({ closeModal }: prop) => {
     const files = event.target.files;
 
     const fileNames = Array.from(files).map((file) => file.name);
+
+    dispatch({
+      type: "ADD_FILE_NAMES_TO_FOLDER",
+      payload: { folderName: "Additional Files", fileNames: fileNames },
+    });
 
     dispatch({
       type: "ADD_FILES",
