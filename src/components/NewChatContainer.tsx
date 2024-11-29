@@ -115,7 +115,7 @@ const ChatContainer = ({
               <option
                 key={obj?.id}
                 value={obj?.section_heading}
-                className="text-sm  font-montserrat"
+                className="text-sm  font-montserrat  text-white"
               >
                 {obj?.section_heading}
               </option>
