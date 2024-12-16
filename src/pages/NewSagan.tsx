@@ -1,17 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Star,
-  Copy,
-  MessageCircle,
   FileText,
   Download,
   Clipboard,
   History,
-  ClipboardCopy,
-  RefreshCcw,
   ChevronDown,
-  FileStack,
-  CircleUser,
   Send,
   ChevronUp,
   BookMarked,
@@ -33,32 +27,26 @@ import PromptForm from "../components/PromptForm";
 import LibraryForm from "../components/LibraryForm";
 import CompanyForm from "../components/CompanyForm";
 import axios from "axios";
-import Markdown from "react-markdown";
-import Logo from "../assets/white_logo.svg";
 import { useSagan } from "../context/context";
-import firstResponse from "./firstResponse.json";
-import secoundResponse from "./secoundResponse.json";
 import { InitiateWebsocket } from "../services/websocket";
-import md from "../assets/md.svg";
-const SESSION_ID = 1234;
 const NewSagan = () => {
   const { state, dispatch } = useSagan();
   const [isOpenSection, setIsOpenSection] = useState(false);
   const [isOpenFiles, setIsOpenFiles] = useState(false);
-  const [storePrompt, setStorePrompt] = useState("");
-  const [step, setStep] = useState(1);
+  // const [storePrompt, setStorePrompt] = useState("");
+  // const [step, setStep] = useState(1);
   const [isDocumentOpen, setIsDocumentOpen] = useState(false);
   const [activeFormat, setActiveFormat] = useState("markdown");
   const [isPrompt, setIsPrompt] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [activeMode, setActiveMode] = useState(false);
+  // const [activeMode, setActiveMode] = useState(false);
   const [responseText, setResponseText] = useState<string>("");
   const [userPrompt, setUserPrompt] = useState(
     localStorage.getItem("prompt") || ""
   );
   const [expandedFolders, setExpandedFolders] = useState({});
-  const [sectionMode, setSectionMode] = useState(false);
+  // const [sectionMode, setSectionMode] = useState(false);
   const [sectionHeading, setSectionsHeadings] = useState(
     localStorage.getItem("sections") || []
   );
@@ -69,7 +57,7 @@ const NewSagan = () => {
   const sectionRefs = useRef({});
   const [sectionContents, setSectionContents] = useState({});
 
-  const [chatMode, setChatMode] = useState(false);
+  // const [chatMode, setChatMode] = useState(false);
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
@@ -77,11 +65,17 @@ const NewSagan = () => {
 
   const [latexData, setLatexData] = useState(localStorage.getItem("latex"));
   const [mdData, setMdData] = useState(localStorage.getItem("md"));
-  const [pdfData, setPdfData] = useState(localStorage.getItem("pdf"));
-  const [aiText, setAiText] = useState("");
+  // const [pdfData, setPdfData] = useState(localStorage.getItem("pdf"));
+  // const [aiText, setAiText] = useState("");
+
+  const [isEditing, setIsEditing] = useState(false);
 
   const [selectedSectionHeading, setSelectedSectionHeading] = useState(
     localStorage.getItem("selectedHeading") || ""
+  );
+
+  const [localLatex, setLocalLatex] = useState(
+    localStorage.getItem("latex") || ""
   );
 
   const outputButtons = [
@@ -501,6 +495,13 @@ const NewSagan = () => {
     );
   }
 
+  const decodeHTMLEntitiesFromLatex = () => {
+    const textArea = document.createElement("textarea");
+
+    textArea.innerHTML = renderLatexWithIds(state.latexData);
+    return textArea?.value;
+  };
+
   function addIdsToMarkdownHeadings(markdownData) {
     return markdownData?.replace(
       /^(#{1,6})\s*(.+)$/gm, // Match Markdown headings (e.g., # Heading, ## Subheading)
@@ -577,11 +578,150 @@ const NewSagan = () => {
 
   const scrollToBottomN = () => {
     setCurrPosition("top");
-    console.log("bottom");
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  console.log(currPosition, "position");
+  // Create debounced version of save function
+
+  const [timeoutId, setTimeoutId] = useState<number | NodeJS.Timeout | null>(
+    null
+  );
+
+  const contentEditableRef = useRef(null);
+
+  // const handleImageUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     // Convert image to a path or Base64 (depending on your backend approach)
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       const imagePath = `uploaded-images/${file.name}`; // Example path
+
+  //       // Get the cursor position and insert LaTeX image command
+  //       const contentEditable = contentEditableRef.current;
+  //       const cursorPosition = window.getSelection().getRangeAt(0);
+
+  //       // Insert the LaTeX image placeholder at the current cursor position
+  //       const latexCommand = `\\includegraphics[width=\\textwidth]{${imagePath}}`;
+
+  //       // Update the LaTeX content with the new command
+  //       const updatedLatexContent =
+  //         state.latexData.substring(0, cursorPosition.startOffset) +
+  //         latexCommand +
+  //         state.latexData.substring(cursorPosition.startOffset);
+
+  //       // Dispatch updated LaTeX content
+  //       dispatch({ type: "SET_LATEX_DATA", payload: updatedLatexContent });
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const [image, setImage] = useState(null);
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+
+    // const cursorPosition = e.target.selectionStart;
+    const textBeforeCursor = localLatex.substring(0, caretLocation);
+    const textAfterCursor = localLatex.substring(caretLocation);
+    const newLatex =
+      textBeforeCursor +
+      `
+    \\begin{figure}
+        \\centering    
+        \\includegraphics[width=0.25\\linewidth]{{./${file.name}}}
+    \\end{figure}
+    ` +
+      textAfterCursor;
+
+    setLocalLatex(newLatex);
+    // dispatch({ type: "SET_LATEX_DATA", payload: newLatex });
+    // localStorage.setItem("latex", newLatex);
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("latex", localLatex);
+    formData.append("cursor_position", caretLocation);
+    const res = await axios.post(
+      "http://127.0.0.1:8002/upload-image-to-latex",
+      formData,
+
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log(res, "res");
+
+    // if (res.data.latex) {
+    //   dispatch({ type: "SET_LATEX_DATA", payload: res?.data?.latex });
+    //   localStorage.setItem("latex", res?.data?.latex);
+    // }
+  };
+
+  const [caretLocation, setCaretLocation] = useState(0);
+
+  const preInputClickHandler = (e) => {
+    console.log(e, e.target, e.target.selectionStart);
+
+    setCaretLocation(e.target.selectionStart);
+    // if (document.getSelection) {
+    //   // all browsers, except IE before version 9
+    //   var sel = document.getSelection();
+    //   // sel is a string in Firefox and Opera,
+    //   // and a selectionRange object in Google Chrome, Safari and IE from version 9
+    //   // the alert method displays the result of the toString method of the passed object
+    //   console.log(sel, "1", sel.focusOffset);
+    //   setCaretLocation(sel.focusOffset);
+    // } else {
+    //   if (document.selection) {
+    //     // Internet Explorer before version 9
+    //     var textRange = document.selection.createRange();
+    //     console.log(textRange.text, "2");
+    //   }
+    // }
+  };
+
+  const saveHandler = () => {
+    setIsEditing(false);
+    dispatch({ type: "SET_LATEX_DATA", payload: localLatex });
+    localStorage.setItem("latex", localLatex);
+  };
+
+  const latexChangeHandler = (e: React.FormEvent<HTMLDivElement>) => {
+    // const newContent = (e.target as HTMLDivElement).innerText;
+    //
+
+    setLocalLatex(e.target.value);
+
+    // Clear the previous timeout
+    // if (timeoutId) {
+    //   clearTimeout(timeoutId as number);
+    // }
+
+    // // Set a new timeout to save after a delay (debouncing)
+    // const newTimeoutId = setTimeout(() => {
+    //   dispatch({ type: "SET_LATEX_DATA", payload: newContent });
+    //   localStorage.setItem("latex", newContent);
+    // }, 5000); // Save after 1 second of no edits
+
+    // setTimeoutId(newTimeoutId);
+  };
+  console.log(typeof state.latexData);
+  const compileHandler = async () => {
+    const res = await axios.post("http://127.0.0.1:8002/update-latex", {
+      latex_content: state.latexData,
+    });
+
+    if (res.data.pdf_file) {
+      console.log(res, "res from compile");
+      dispatch({ type: "SET_PDF_DATA", payload: res?.data?.pdf_file });
+      localStorage.setItem("pdf", res?.data?.pdf_file);
+      setActiveFormat("pdf");
+    }
+  };
 
   return (
     <div className="min-h-screen  h-full bg-[#1a1a1a] text-gray-100">
@@ -914,10 +1054,39 @@ const NewSagan = () => {
                   <BookMarked size={16} />
                   <span className="text-sm font-montserrat">LaTeX</span>
                 </label>
+
+                <button className=" bg-blue-600 text-sm font-montserrat relative  py-1 rounded-full px-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="mb-4 p-2  text-sm font-montserrat border border-gray-300 rounded cursor-pointer opacity-0 absolute inset-0"
+                  />
+                  upload
+                </button>
+
+                {isEditing ? (
+                  <button
+                    className=" bg-blue-600 text-sm font-montserrat relative  py-1 rounded-full px-2"
+                    onClick={saveHandler}
+                  >
+                    save
+                  </button>
+                ) : (
+                  <button
+                    className=" bg-blue-600 text-sm font-montserrat relative  py-1 rounded-full px-2"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    edit
+                  </button>
+                )}
               </div>
               <button
                 className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full transition-colors duration-200 flex items-center gap-2 shadow-sm"
-                onClick={() => setActiveFormat("pdf")}
+                onClick={() => {
+                  compileHandler();
+                  // setActiveFormat("pdf")
+                }}
               >
                 <FileText size={16} />
                 <span className="text-sm  font-montserrat"> Compile</span>
@@ -938,14 +1107,31 @@ const NewSagan = () => {
                   </div>
                 </div>
               ) : activeFormat === "latex" ? (
-                <div className="p-8">
-                  <pre
-                    className="font-montserrat text-sm whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{
-                      __html: renderLatexWithIds(state.latexData),
-                    }}
-                  />
-                </div>
+                <>
+                  {isEditing ? (
+                    // <div className="p-8">
+                    // {" "}
+                    <textarea
+                      className="w-full bg-[#2a2a2a] h-full font-montserrat text-sm whitespace-pre-wrap outline-none scrollbar-none"
+                      value={localLatex}
+                      onClick={preInputClickHandler}
+                      onChange={(e) => latexChangeHandler(e)}
+                    />
+                  ) : (
+                    // </div>
+                    <div className="p-8">
+                      <pre
+                        id="123"
+                        className="font-montserrat text-sm whitespace-pre-wrap outline-none"
+                        dangerouslySetInnerHTML={{
+                          __html: renderLatexWithIds(state.latexData),
+                        }}
+
+                        // onClick={preInputClickHandler}
+                      />
+                    </div>
+                  )}
+                </>
               ) : activeFormat === "pdf" ? (
                 <iframe
                   src={`data:application/pdf;base64,${state.pdfData}`}
