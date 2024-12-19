@@ -1,9 +1,20 @@
 import React, { createContext, useContext, useReducer, Dispatch } from "react";
+
+interface Message {
+  aiMessage: string; // AI-generated message
+  userPrompt: string; // User's input/prompt
+}
+// interface ChatData {
+//   id: number;
+//   section_heading: string;
+//   messages: any[];
+//   llmChat: any[]; // New llmChat array inside each allChatData item
+// }
+
 interface ChatData {
-  id: number;
-  section_heading: string;
-  messages: any[];
-  llmChat: any[]; // New llmChat array inside each allChatData item
+  id: number; // Unique identifier for the section
+  section_heading: string; // Section heading title
+  messages: Message[]; // Array of messages
 }
 
 interface AppState {
@@ -15,13 +26,14 @@ interface AppState {
   mdData: string | null;
   pdfData: string | null;
   selectedSectionHeading: string;
-  sectionHeading: any;
-  files: any;
+  sectionHeadings: string[];
+  files: string[];
   loading: boolean;
-
+  counter: number;
   allChatData: ChatData[];
   userQuery: string;
   userQueryCopy: string;
+  isApiRunning: boolean;
   fileStructure: FileStructureFolder[];
 }
 
@@ -39,13 +51,15 @@ type AppAction =
   | { type: "SET_MD_DATA"; payload: string | null }
   | { type: "SET_PDF_DATA"; payload: string | null }
   | { type: "SET_SELECTED_SECTION_HEADING"; payload: string }
-  | { type: "SET_SECTION_HEADING"; payload: any }
-  | { type: "ADD_FILES"; payload: any }
+  | { type: "SET_SECTION_HEADING"; payload: string[] }
+  | { type: "ADD_FILES"; payload: string[] }
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ALL_CHAT_DATA"; payload: ChatData[] }
   | { type: "SET_USER_QUERY"; payload: string }
   | { type: "SET_USER_QUERY_COPY"; payload: string }
   | { type: "SET_FILE_STRUCTURE"; payload: FileStructureFolder[] }
+  | { type: "SET_IS_API_RUNNING"; payload: boolean }
+  | { type: "INC_COUNTER"; payload: number }
   | {
       type: "ADD_FILE_NAMES_TO_FOLDER";
       payload: { folderName: string; fileNames: string[] };
@@ -56,7 +70,7 @@ interface AppContextType {
   dispatch: Dispatch<AppAction>;
 }
 // Define actions
-const reducer = (state: any, action: any) => {
+const reducer = (state: AppState, action: AppAction) => {
   switch (action.type) {
     case "SET_ACTIVE_MODE":
       localStorage.setItem("activeMode", String(action.payload));
@@ -109,6 +123,7 @@ const reducer = (state: any, action: any) => {
             ...state.allChatData.slice(selectedIdx + 1),
           ];
           console.log(formattedData, "formatted data");
+          // localStorage.setItem("allChatData", JSON.stringify(formattedData));
           return {
             ...state,
             allChatData: formattedData,
@@ -117,6 +132,7 @@ const reducer = (state: any, action: any) => {
 
         return state;
       } else {
+        // localStorage.setItem("allChatData", JSON.stringify(action.payload));
         return { ...state, allChatData: action.payload };
       }
     case "SET_USER_QUERY":
@@ -182,6 +198,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     files: JSON.parse(localStorage.getItem("files")) || [],
     sectionHeadings: localStorage.getItem("sectionHeadings") || [],
     loading: false,
+    // allChatData: JSON.parse(localStorage.getItem("allChatData")) || [],
     allChatData: [],
     userQuery: "",
     userQueryCopy: "",

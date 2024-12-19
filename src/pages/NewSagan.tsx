@@ -29,6 +29,7 @@ import CompanyForm from "../components/CompanyForm";
 import axios from "axios";
 import { useSagan } from "../context/context";
 import { InitiateWebsocket } from "../services/websocket";
+import Loader from "../components/Loader";
 const NewSagan = () => {
   const { state, dispatch } = useSagan();
   const [isOpenSection, setIsOpenSection] = useState(false);
@@ -37,34 +38,37 @@ const NewSagan = () => {
   // const [step, setStep] = useState(1);
   const [isDocumentOpen, setIsDocumentOpen] = useState(false);
   const [activeFormat, setActiveFormat] = useState("markdown");
-  const [isPrompt, setIsPrompt] = useState(false);
+  // const [isPrompt, setIsPrompt] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   // const [activeMode, setActiveMode] = useState(false);
-  const [responseText, setResponseText] = useState<string>("");
-  const [userPrompt, setUserPrompt] = useState(
-    localStorage.getItem("prompt") || ""
-  );
+  // const [responseText, setResponseText] = useState<string>("");
+  // const [userPrompt, setUserPrompt] = useState(
+  //   localStorage.getItem("prompt") || ""
+  // );
   const [expandedFolders, setExpandedFolders] = useState({});
   // const [sectionMode, setSectionMode] = useState(false);
-  const [sectionHeading, setSectionsHeadings] = useState(
-    localStorage.getItem("sections") || []
-  );
+  // const [sectionHeading, setSectionsHeadings] = useState(
+  //   localStorage.getItem("sections") || []
+  // );
   const [outputHoveredIndex, setOutputHoveredIndex] = useState<number | null>(
     null
   );
 
+  const [isPublishLoading, setIsPublishLoading] = useState(false);
+  const [isCompileLoading, setIsCompileLoading] = useState(false);
+
   const sectionRefs = useRef({});
-  const [sectionContents, setSectionContents] = useState({});
+  // const [sectionContents, setSectionContents] = useState({});
 
   // const [chatMode, setChatMode] = useState(false);
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
 
-  const [latexData, setLatexData] = useState(localStorage.getItem("latex"));
-  const [mdData, setMdData] = useState(localStorage.getItem("md"));
+  // const [latexData, setLatexData] = useState(localStorage.getItem("latex"));
+  // const [mdData, setMdData] = useState(localStorage.getItem("md"));
   // const [pdfData, setPdfData] = useState(localStorage.getItem("pdf"));
   // const [aiText, setAiText] = useState("");
 
@@ -113,7 +117,7 @@ const NewSagan = () => {
   const getState = () => {
     return newStateRef.current;
   };
-  const [connectionTokenApi, toggleConnectionTokenApi] = useState(true);
+  // const [connectionTokenApi, toggleConnectionTokenApi] = useState(true);
   // useEffect(() => {
   //   if (connectionTokenApi) {
   //     dispatch(getConnectionToken());
@@ -122,8 +126,8 @@ const NewSagan = () => {
   const connectionTokenStoredInStateManagement = "1234";
   useEffect(() => {
     if (connectionTokenStoredInStateManagement) {
-      let interval;
-      toggleConnectionTokenApi(false);
+      // let interval;
+      // toggleConnectionTokenApi(false);
       webSocketObj.initiateConnection(
         connectionTokenStoredInStateManagement,
         dispatch,
@@ -132,7 +136,7 @@ const NewSagan = () => {
       // webSocketObj.send({ userMsg: "great" });
       webSocketObj.reconnectOnClose(() => {
         //   console.log("reconnect", new Date()); if you want to check reconnects in console
-        toggleConnectionTokenApi(true);
+        // toggleConnectionTokenApi(true);
       });
 
       //setting up ping keep-alive check
@@ -166,21 +170,9 @@ const NewSagan = () => {
       case "Project Information":
         return <ProjectInfo closeModal={() => setActiveModal(null)} />;
       case "Template":
-        return (
-          <TemplateForm
-            closeModal={() => setActiveModal(null)}
-            setFiles={setFiles}
-          />
-        );
+        return <TemplateForm closeModal={() => setActiveModal(null)} />;
       case "Prompt":
-        return (
-          <PromptForm
-            closeModal={() => setActiveModal(null)}
-            setResponseText={setResponseText}
-            setUserPrompt={setUserPrompt}
-            setIsPrompt={setIsPrompt}
-          />
-        );
+        return <PromptForm closeModal={() => setActiveModal(null)} />;
       case "Library":
         return <LibraryForm closeModal={() => setActiveModal(null)} />;
       case "Company Information":
@@ -193,13 +185,13 @@ const NewSagan = () => {
   // CHAT CONTAINER CODE STARTS HERE
 
   const [text, setText] = useState("");
-  const [loader, setLoader] = useState(false);
+  // const [loader, setLoader] = useState(false);
 
   const selectedSectionData = state.allChatData?.find(
     (i) => i.section_heading === state.selectedSectionHeading
   );
 
-  const messagesEndRef = useRef<any>(null);
+  const messagesEndRef = useRef<HTMLElement | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -251,7 +243,7 @@ const NewSagan = () => {
         payload: text,
       });
 
-      setLoader(true);
+      // setLoader(true);
 
       const response = await axios.post("http://127.0.0.1:8002/process-input", {
         message: text,
@@ -290,7 +282,7 @@ const NewSagan = () => {
       //   }
       // }
 
-      setLoader(false);
+      // setLoader(false);
 
       setTimeout(() => {
         scrollToBottom();
@@ -300,28 +292,28 @@ const NewSagan = () => {
 
   // CHAT CONTAINER CODE ENDS HERE
 
-  function extractLatexContent(response: string) {
-    const endDocumentIndex = response?.indexOf("\\end{document}");
-    if (endDocumentIndex !== -1) {
-      const endIndex = endDocumentIndex + "\\end{document}".length;
-      return response.substring(0, endIndex);
-    } else {
-      return response;
-    }
-  }
+  // function extractLatexContent(response: string) {
+  //   const endDocumentIndex = response?.indexOf("\\end{document}");
+  //   if (endDocumentIndex !== -1) {
+  //     const endIndex = endDocumentIndex + "\\end{document}".length;
+  //     return response.substring(0, endIndex);
+  //   } else {
+  //     return response;
+  //   }
+  // }
 
   useEffect(() => {
-    let storedData = localStorage.getItem("first_reponse");
+    const storedData = localStorage.getItem("first_reponse");
 
     let newData = {};
     newData = storedData ? JSON.parse(storedData) : {};
     newData = { data: newData };
 
-    const latexData = newData?.data?.tex_file;
+    const latxData = newData?.data?.tex_file;
 
-    if (latexData) {
-      dispatch({ type: "SET_LATEX_DATA", payload: latexData });
-      localStorage.setItem("latex", latexData);
+    if (latxData) {
+      dispatch({ type: "SET_LATEX_DATA", payload: latxData });
+      localStorage.setItem("latex", latxData);
     }
     if (state.allChatData.length === 0 && state.chatMode) {
       const data = newData?.data?.section_headings?.map((heading, index) => ({
@@ -340,7 +332,7 @@ const NewSagan = () => {
             : [],
       }));
 
-      setSectionsHeadings(newData?.data?.section_headings);
+      // setSectionsHeadings(newData?.data?.section_headings);
 
       dispatch({ type: "SET_ALL_CHAT_DATA", payload: data });
       setSelectedSectionHeading(newData?.data?.section_headings[0]);
@@ -348,7 +340,7 @@ const NewSagan = () => {
   }, []);
 
   const startSagan = async () => {
-    setResponseText("");
+    // setResponseText("");
 
     const responses = await axios.post(
       "http://127.0.0.1:8000/process-input-first-wrokflow",
@@ -392,17 +384,17 @@ const NewSagan = () => {
       localStorage.setItem("pdf", pdfData);
     }
 
-    const mdData = response?.data?.md_file;
-    if (mdData) {
-      dispatch({ type: "SET_MD_DATA", payload: mdData });
-      localStorage.setItem("md", mdData);
+    const mDData = response?.data?.md_file;
+    if (mDData) {
+      dispatch({ type: "SET_MD_DATA", payload: mDData });
+      localStorage.setItem("md", mDData);
     }
 
-    const latexData = response?.data?.tex_file;
+    const latxData = response?.data?.tex_file;
 
-    if (latexData) {
-      dispatch({ type: "SET_LATEX_DATA", payload: latexData });
-      localStorage.setItem("latex", latexData);
+    if (latxData) {
+      dispatch({ type: "SET_LATEX_DATA", payload: latxData });
+      localStorage.setItem("latex", latxData);
     }
 
     const sections = response?.data?.section_headings;
@@ -416,7 +408,7 @@ const NewSagan = () => {
 
   localStorage.setItem("selectedHeading", selectedSectionHeading);
   useEffect(() => {
-    if (state.allChatData && latexData) {
+    if (state.allChatData && state.latexData) {
       // Initialize refs
       state.allChatData.forEach((section) => {
         sectionRefs.current[section.section_heading] = React.createRef();
@@ -428,9 +420,9 @@ const NewSagan = () => {
       let currentContent = [];
 
       // Split the latex data into lines
-      const lines = latexData.split("\n");
+      const lines = state.latexData.split("\n");
 
-      for (let line of lines) {
+      for (const line of lines) {
         // Check if line contains a section heading
         const sectionMatch = line.match(/\\section{([^}]+)}/);
 
@@ -454,9 +446,9 @@ const NewSagan = () => {
         sections[currentSection] = currentContent.join("\n");
       }
 
-      setSectionContents(sections);
+      // setSectionContents(sections);
     }
-  }, [state.allChatData, latexData, mdData]);
+  }, [state.allChatData, state.latexData, state.mdData]);
 
   useEffect(() => {
     if (state.allChatData) {
@@ -468,41 +460,43 @@ const NewSagan = () => {
     }
   }, [state.allChatData]);
 
-  const processedMdData = React.useMemo(() => {
-    let content = mdData;
+  // const processedMdData = React.useMemo(() => {
+  //   let content = mdData;
 
-    // Add anchor divs before each section heading
-    state.allChatData?.forEach((section) => {
-      const headingText = `# ${section.section_heading}`;
-      const anchorDiv = `\n<div id="section-${section.id}" ref={sectionRefs.current['${section.section_heading}']}></div>\n`;
-      content = content?.replace(headingText, `${anchorDiv}${headingText}`);
-    });
+  //   // Add anchor divs before each section heading
+  //   state.allChatData?.forEach((section) => {
+  //     const headingText = `# ${section.section_heading}`;
+  //     const anchorDiv = `\n<div id="section-${section.id}" ref={sectionRefs.current['${section.section_heading}']}></div>\n`;
+  //     content = content?.replace(headingText, `${anchorDiv}${headingText}`);
+  //   });
 
-    return content;
-  }, [mdData, state.allChatData]);
+  //   return content;
+  // }, [mdData, state.allChatData]);
 
-  function scrollToSection(sectionHeading) {
-    const section = document.getElementById(sectionHeading);
+  function scrollToSection(heading: string) {
+    const section = document.getElementById(heading);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
     }
   }
 
-  function renderLatexWithIds(latexData) {
-    return latexData?.replace(
+  console.log(state, "state");
+
+  function renderLatexWithIds(latxData: string) {
+    return latxData?.replace(
       /\\section\{(.*?)\}/g,
       (match, sectionTitle) => `<div id="${sectionTitle}">${match}</div>` // Wrap LaTeX section with a div
     );
   }
 
-  const decodeHTMLEntitiesFromLatex = () => {
-    const textArea = document.createElement("textarea");
+  // const decodeHTMLEntitiesFromLatex = () => {
+  //   const textArea = document.createElement("textarea");
 
-    textArea.innerHTML = renderLatexWithIds(state.latexData);
-    return textArea?.value;
-  };
+  //   textArea.innerHTML = renderLatexWithIds(state.latexData);
+  //   return textArea?.value;
+  // };
 
-  function addIdsToMarkdownHeadings(markdownData) {
+  function addIdsToMarkdownHeadings(markdownData: string | null) {
     return markdownData?.replace(
       /^(#{1,6})\s*(.+)$/gm, // Match Markdown headings (e.g., # Heading, ## Subheading)
       (match, hashes, heading) =>
@@ -512,8 +506,8 @@ const NewSagan = () => {
     );
   }
 
-  function scrollToMdSection(sectionHeading) {
-    const sectionId = sectionHeading?.trim()?.replace(/\s+/g, "-");
+  function scrollToMdSection(heading: string) {
+    const sectionId = heading?.trim()?.replace(/\s+/g, "-");
     const section = document?.getElementById(sectionId);
     if (section) {
       section?.scrollIntoView({ behavior: "smooth" });
@@ -617,7 +611,7 @@ const NewSagan = () => {
   //   }
   // };
 
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -628,7 +622,7 @@ const NewSagan = () => {
     const newLatex =
       textBeforeCursor +
       `
-    \\begin{figure}
+    \\begin{figure}[h]
         \\centering    
         \\includegraphics[width=0.25\\linewidth]{{./${file.name}}}
     \\end{figure}
@@ -711,21 +705,29 @@ const NewSagan = () => {
   };
   console.log(typeof state.latexData);
   const compileHandler = async () => {
+    // setActiveFormat("pdf");
+    setIsCompileLoading(true);
     const res = await axios.post("http://127.0.0.1:8002/update-latex", {
       latex_content: state.latexData,
     });
+
+    console.log(res, "res");
 
     if (res.data.pdf_file) {
       console.log(res, "res from compile");
       dispatch({ type: "SET_PDF_DATA", payload: res?.data?.pdf_file });
       localStorage.setItem("pdf", res?.data?.pdf_file);
       setActiveFormat("pdf");
+      setIsCompileLoading(false);
+    } else {
+      setIsCompileLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen  h-full bg-[#1a1a1a] text-gray-100">
+    <div className="min-h-screen  h-full bg-[#1a1a1a] text-gray-100  relative">
       {/* Sidebar */}
+      {(isPublishLoading || isCompileLoading) && <Loader />}
       <div
         className={`absolute left-0 top-0 h-full bg-zinc-800 rounded-xl z-[999] transition-all duration-300 ease-in-out  
              inset-0 bg-black/40 backdrop-blur-xl`}
@@ -991,9 +993,10 @@ const NewSagan = () => {
                   setText={setText}
                   scrollToBottom={scrollToBottom}
                   selectedSectionData={selectedSectionData}
-                  setLoader={setLoader}
+                  // setLoader={setLoader}
                   messagesEndRef={messagesEndRef}
                   sendPromptHandler={sendPromptHandler}
+                  setIsPublishLoading={setIsPublishLoading}
                 />
               </div>
             )}

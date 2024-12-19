@@ -21,6 +21,7 @@ const ChatContainer = ({
   setLoader,
   messagesEndRef,
   sendPromptHandler,
+  setIsPublishLoading,
 }: any) => {
   const { state, dispatch } = useSagan();
 
@@ -48,6 +49,7 @@ const ChatContainer = ({
     {};
 
   const publishHandler = async () => {
+    setIsPublishLoading(true);
     const response = await axios.post("http://127.0.0.1:8002/publish", {
       modified_text: lastMsgOfSelectedSection?.modified_section_text,
       section_number: selectedSectionData?.id,
@@ -73,6 +75,10 @@ const ChatContainer = ({
         dispatch({ type: "SET_LATEX_DATA", payload: latexData });
         localStorage.setItem("latex", latexData);
       }
+
+      setIsPublishLoading(false);
+    } else {
+      setIsPublishLoading(false);
     }
   };
 
